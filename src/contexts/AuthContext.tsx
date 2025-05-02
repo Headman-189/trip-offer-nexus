@@ -34,37 +34,34 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const login = async (email: string, password: string) => {
-    setIsLoading(true);
-    try {
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Check if user exists in mock data
-      const user = mockUsers.find(u => u.email === email);
-      if (!user) {
-        toast({
-          title: "Login failed",
-          description: "Invalid email or password",
-          variant: "destructive",
-        });
-        throw new Error("Invalid credentials");
-      }
-      
-      // In a real app, you would validate the password here
-      
-      setCurrentUser(user);
-      localStorage.setItem("user", JSON.stringify(user));
+  setIsLoading(true);
+  try {
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    const user = mockUsers.find(u => u.email === email);
+    if (!user) {
       toast({
-        title: "Login successful",
-        description: `Welcome back, ${user.name}!`,
+        title: "Login failed",
+        description: "Invalid email or password",
+        variant: "destructive",
       });
-    } catch (error) {
-      console.error("Login error:", error);
-      throw error;
-    } finally {
-      setIsLoading(false);
+      throw new Error("Invalid credentials");
     }
-  };
+
+    setCurrentUser(user);  // Met à jour currentUser
+    localStorage.setItem("user", JSON.stringify(user));  // Sauvegarde l'utilisateur
+
+    toast({
+      title: "Login successful",
+      description: `Welcome back, ${user.name}!`,
+    });
+  } catch (error) {
+    console.error("Login error:", error);
+    throw error;
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   const register = async (name: string, email: string, password: string, role: UserRole) => {
     setIsLoading(true);
