@@ -1,0 +1,181 @@
+
+import { User, TravelRequest, TravelOffer, Notification } from "@/types";
+
+// Mock Users
+export const mockUsers: User[] = [
+  {
+    id: "client-1",
+    name: "John Smith",
+    email: "john@example.com",
+    role: "client",
+    createdAt: new Date(2023, 0, 15).toISOString(),
+  },
+  {
+    id: "client-2",
+    name: "Sarah Johnson",
+    email: "sarah@example.com",
+    role: "client",
+    createdAt: new Date(2023, 1, 3).toISOString(),
+  },
+  {
+    id: "agency-1",
+    name: "Global Travel Co",
+    email: "contact@globaltravel.com",
+    role: "agency",
+    createdAt: new Date(2022, 10, 5).toISOString(),
+  },
+  {
+    id: "agency-2",
+    name: "Luxury Journeys",
+    email: "bookings@luxuryjourneys.com",
+    role: "agency",
+    createdAt: new Date(2022, 11, 12).toISOString(),
+  }
+];
+
+// Mock Travel Requests
+export const mockTravelRequests: TravelRequest[] = [
+  {
+    id: "req-1",
+    clientId: "client-1",
+    departureCity: "New York",
+    destinationCity: "London",
+    departureDate: new Date(2023, 6, 15).toISOString(),
+    returnDate: new Date(2023, 6, 30).toISOString(),
+    transportType: "flight",
+    additionalNotes: "Looking for a direct flight, preferably morning departure.",
+    status: "offers_received",
+    createdAt: new Date(2023, 5, 1).toISOString(),
+  },
+  {
+    id: "req-2",
+    clientId: "client-1",
+    departureCity: "New York",
+    destinationCity: "Washington DC",
+    departureDate: new Date(2023, 7, 5).toISOString(),
+    returnDate: new Date(2023, 7, 8).toISOString(),
+    transportType: "rail",
+    status: "pending",
+    createdAt: new Date(2023, 5, 20).toISOString(),
+  },
+  {
+    id: "req-3",
+    clientId: "client-2",
+    departureCity: "San Francisco",
+    destinationCity: "Tokyo",
+    departureDate: new Date(2023, 9, 10).toISOString(),
+    returnDate: new Date(2023, 9, 25).toISOString(),
+    transportType: "flight",
+    additionalNotes: "Economy class, flexible dates +/- 2 days.",
+    status: "accepted",
+    createdAt: new Date(2023, 7, 30).toISOString(),
+  },
+];
+
+// Mock Travel Offers
+export const mockTravelOffers: TravelOffer[] = [
+  {
+    id: "offer-1",
+    requestId: "req-1",
+    agencyId: "agency-1",
+    agencyName: "Global Travel Co",
+    price: 850,
+    currency: "USD",
+    description: "Round-trip, direct flight. Departing JFK 09:15, arriving LHR 21:30. Return flight departing LHR 11:45, arriving JFK 14:20.",
+    departureTime: new Date(2023, 6, 15, 9, 15).toISOString(),
+    returnTime: new Date(2023, 6, 30, 11, 45).toISOString(),
+    isBestPrice: true,
+    status: "pending",
+    createdAt: new Date(2023, 5, 2).toISOString(),
+  },
+  {
+    id: "offer-2",
+    requestId: "req-1",
+    agencyId: "agency-2",
+    agencyName: "Luxury Journeys",
+    price: 1200,
+    currency: "USD",
+    description: "Premium economy, direct flight with extra legroom. Departing JFK 11:00, arriving LHR 23:15. Return flight departing LHR 13:30, arriving JFK 16:15.",
+    departureTime: new Date(2023, 6, 15, 11, 0).toISOString(),
+    returnTime: new Date(2023, 6, 30, 13, 30).toISOString(),
+    status: "pending",
+    createdAt: new Date(2023, 5, 3).toISOString(),
+  },
+  {
+    id: "offer-3",
+    requestId: "req-3",
+    agencyId: "agency-1",
+    agencyName: "Global Travel Co",
+    price: 1500,
+    currency: "USD",
+    description: "Economy class, 1 stop in Seoul. Departing SFO 13:45, arriving NRT 18:30 next day. Return flight departing NRT 09:15, arriving SFO 14:40.",
+    departureTime: new Date(2023, 9, 10, 13, 45).toISOString(),
+    returnTime: new Date(2023, 9, 25, 9, 15).toISOString(),
+    isBestPrice: true,
+    status: "accepted",
+    paymentReference: "PAY-1234567890",
+    createdAt: new Date(2023, 8, 1).toISOString(),
+  },
+  {
+    id: "offer-4",
+    requestId: "req-3",
+    agencyId: "agency-2",
+    agencyName: "Luxury Journeys",
+    price: 2200,
+    currency: "USD",
+    description: "Business class, direct flight. Departing SFO 11:30, arriving NRT 15:20 next day. Return flight departing NRT 17:45, arriving SFO 11:15.",
+    departureTime: new Date(2023, 9, 10, 11, 30).toISOString(),
+    returnTime: new Date(2023, 9, 25, 17, 45).toISOString(),
+    status: "rejected",
+    createdAt: new Date(2023, 8, 2).toISOString(),
+  },
+];
+
+// Mock Notifications
+export const mockNotifications: Notification[] = [
+  {
+    id: "notif-1",
+    userId: "client-1",
+    title: "New Offer Received",
+    message: "You have received a new offer for your London trip from Global Travel Co.",
+    type: "info",
+    isRead: false,
+    createdAt: new Date(2023, 5, 2, 14, 30).toISOString(),
+  },
+  {
+    id: "notif-2",
+    userId: "client-1",
+    title: "Another Offer Received",
+    message: "You have received a new offer for your London trip from Luxury Journeys.",
+    type: "info",
+    isRead: true,
+    createdAt: new Date(2023, 5, 3, 9, 15).toISOString(),
+  },
+  {
+    id: "notif-3",
+    userId: "agency-1",
+    title: "New Travel Request",
+    message: "A new travel request has been submitted for a flight from New York to London.",
+    type: "info",
+    isRead: true,
+    createdAt: new Date(2023, 5, 1, 10, 45).toISOString(),
+  },
+  {
+    id: "notif-4",
+    userId: "client-2",
+    title: "Offer Accepted",
+    message: "You have accepted an offer for your trip to Tokyo. Please complete the payment.",
+    type: "success",
+    isRead: true,
+    createdAt: new Date(2023, 8, 5, 16, 20).toISOString(),
+  },
+  {
+    id: "notif-5",
+    userId: "agency-1",
+    title: "Offer Accepted",
+    message: "Your offer for the Tokyo trip has been accepted. Awaiting payment confirmation.",
+    type: "success",
+    isRead: false,
+    createdAt: new Date(2023, 8, 5, 16, 21).toISOString(),
+  },
+];
