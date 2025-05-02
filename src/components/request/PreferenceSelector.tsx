@@ -3,18 +3,18 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { TravelClass, TravelPreferences } from "@/types";
 import { cn } from "@/lib/utils";
-import { 
-  ArrowDown, 
-  ArrowUp, 
-  Airplane, 
-  Briefcase, 
-  Ticket, 
-  Bed, 
-  StopCircle, 
-  Clock, 
-  Shield, 
-  Car, 
-  Luggage 
+import {
+  ArrowDown,
+  ArrowUp,
+  Plane, // ✅ remplace Airplane
+  Briefcase,
+  Ticket,
+  Bed,
+  StopCircle,
+  Clock,
+  Shield,
+  Car,
+  Luggage
 } from "lucide-react";
 import { Toggle } from "@/components/ui/toggle";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -182,7 +182,7 @@ export const PreferenceSelector = ({ preferences, onChange }: PreferenceSelector
               preferences.privateDriver && "border-primary"
             )}
           >
-            <Airplane className="mb-2 h-6 w-6" />
+            <plane className="mb-2 h-6 w-6" />
             <span className="text-center">{t("preferences.privateDriver")}</span>
           </Toggle>
         </div>
