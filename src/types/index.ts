@@ -11,6 +11,19 @@ export interface User {
 
 export type TransportType = 'rail' | 'flight';
 
+export type TravelClass = 'economy' | 'business' | 'first';
+
+export interface TravelPreferences {
+  travelClass?: TravelClass;
+  cheapestOption?: boolean;
+  comfortableOption?: boolean;
+  noStopover?: boolean;
+  longStopover?: boolean;
+  insurance?: boolean;
+  carRental?: boolean;
+  privateDriver?: boolean;
+}
+
 export interface TravelRequest {
   id: string;
   clientId: string;
@@ -20,8 +33,20 @@ export interface TravelRequest {
   returnDate?: string;
   transportType: TransportType;
   additionalNotes?: string;
+  preferences?: TravelPreferences;
   status: 'pending' | 'offers_received' | 'accepted' | 'completed' | 'canceled';
   createdAt: string;
+}
+
+export interface OfferPreferencesMatch {
+  travelClass?: boolean;
+  cheapestOption?: boolean;
+  comfortableOption?: boolean;
+  noStopover?: boolean;
+  longStopover?: boolean;
+  insurance?: boolean;
+  carRental?: boolean;
+  privateDriver?: boolean;
 }
 
 export interface TravelOffer {
@@ -35,6 +60,7 @@ export interface TravelOffer {
   departureTime?: string;
   returnTime?: string;
   isBestPrice?: boolean;
+  preferencesMatch?: OfferPreferencesMatch;
   status: 'pending' | 'accepted' | 'rejected' | 'expired' | 'completed';
   ticketUrl?: string;
   paymentReference?: string;

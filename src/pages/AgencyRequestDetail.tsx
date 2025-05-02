@@ -34,11 +34,15 @@ import {
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
+import { PreferencesDisplay } from "@/components/request/PreferencesDisplay";
+import { OfferPreferencesMatch } from "@/types";
 import { cn } from "@/lib/utils";
 import { FileText, ArrowLeft, AlertCircle, Upload, Calendar as CalendarIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from "react-i18next";
 
 export default function AgencyRequestDetail() {
+  const { t } = useTranslation();
   const { id: requestId } = useParams<{ id: string }>();
   const { currentUser } = useAuth();
   const {
@@ -57,6 +61,7 @@ export default function AgencyRequestDetail() {
   const [returnTime, setReturnTime] = useState<Date | undefined>(undefined);
   const [isSubmittingOffer, setIsSubmittingOffer] = useState(false);
   const [showOfferDialog, setShowOfferDialog] = useState(false);
+  const [preferencesMatch, setPreferencesMatch] = useState<OfferPreferencesMatch>({});
   
   // State for uploading a ticket
   const [ticketUrl, setTicketUrl] = useState(""); // In a real app, this would be a file upload
@@ -72,15 +77,15 @@ export default function AgencyRequestDetail() {
       <MainLayout>
         <div className="animate-fade-in text-center py-12">
           <AlertCircle className="h-16 w-16 mx-auto text-destructive" />
-          <h2 className="mt-4 text-2xl font-bold">Request not found</h2>
+          <h2 className="mt-4 text-2xl font-bold">{t("common.requestNotFound")}</h2>
           <p className="mt-2 text-muted-foreground">
-            The travel request you're looking for doesn't exist or has been removed.
+            {t("common.requestNotFoundDescription")}
           </p>
           <Button 
             className="mt-6"
             onClick={() => navigate("/requests")}
           >
-            <ArrowLeft className="mr-2 h-4 w-4" /> Back to requests
+            <ArrowLeft className="mr-2 h-4 w-4" /> {t("common.backToRequests")}
           </Button>
         </div>
       </MainLayout>
@@ -113,18 +118,25 @@ export default function AgencyRequestDetail() {
   const getStatusBadge = () => {
     switch (request.status) {
       case "pending":
-        return <Badge variant="outline" className="bg-gray-100">Awaiting Offers</Badge>;
+        return <Badge variant="outline" className="bg-gray-100">{t("requestStatus.awaitingOffers")}</Badge>;
       case "offers_received":
-        return <Badge className="bg-brand-500">Has Offers</Badge>;
+        return <Badge className="bg-brand-500">{t("requestStatus.hasOffers")}</Badge>;
       case "accepted":
-        return <Badge className="bg-teal-500">Offer Accepted</Badge>;
+        return <Badge className="bg-teal-500">{t("requestStatus.offerAccepted")}</Badge>;
       case "completed":
-        return <Badge className="bg-green-500">Completed</Badge>;
+        return <Badge className="bg-green-500">{t("requestStatus.completed")}</Badge>;
       case "canceled":
-        return <Badge variant="destructive">Canceled</Badge>;
+        return <Badge variant="destructive">{t("requestStatus.canceled")}</Badge>;
       default:
-        return <Badge variant="outline">Unknown</Badge>;
+        return <Badge variant="outline">{t("requestStatus.unknown")}</Badge>;
     }
+  };
+
+  const handlePreferenceMatchChange = (key: keyof OfferPreferencesMatch, value: boolean) => {
+    setPreferencesMatch(prev => ({
+      ...prev,
+      [key]: value
+    }));
   };
 
   const handleCreateOffer = async (e: React.FormEvent) => {
@@ -132,8 +144,8 @@ export default function AgencyRequestDetail() {
     
     if (!price || !description || !departureTime) {
       toast({
-        title: "Error",
-        description: "Please fill in all required fields",
+        title: t("common.error"),
+        description: t("offerForm.fillAllFields"),
         variant: "destructive",
       });
       return;
@@ -141,8 +153,8 @@ export default function AgencyRequestDetail() {
     
     if (request.returnDate && !returnTime) {
       toast({
-        title: "Error",
-        description: "Return time is required for round trips",
+        title: t("common.error"),
+        description: t("offerForm.returnTimeRequired"),
         variant: "destructive",
       });
       return;
@@ -151,8 +163,8 @@ export default function AgencyRequestDetail() {
     const numericPrice = parseFloat(price);
     if (isNaN(numericPrice) || numericPrice <= 0) {
       toast({
-        title: "Error",
-        description: "Please enter a valid price",
+        title: t("common.error"),
+        description: t("offerForm.invalidPrice"),
         variant: "destructive",
       });
       return;
@@ -169,6 +181,7 @@ export default function AgencyRequestDetail() {
         description,
         departureTime: departureTime.toISOString(),
         returnTime: returnTime ? returnTime.toISOString() : undefined,
+        preferencesMatch: Object.keys(preferencesMatch).length > 0 ? preferencesMatch : undefined,
         status: "pending",
       });
       
@@ -177,16 +190,17 @@ export default function AgencyRequestDetail() {
       setDescription("");
       setDepartureTime(undefined);
       setReturnTime(undefined);
+      setPreferencesMatch({});
       
       toast({
-        title: "Success",
-        description: "Your offer has been submitted successfully",
+        title: t("common.success"),
+        description: t("offerForm.offerSubmitted"),
       });
     } catch (error) {
       console.error("Error creating offer:", error);
       toast({
-        title: "Error",
-        description: "Failed to submit offer. Please try again.",
+        title: t("common.error"),
+        description: t("offerForm.submitError"),
         variant: "destructive",
       });
     } finally {
@@ -199,8 +213,8 @@ export default function AgencyRequestDetail() {
     
     if (!ticketUrl || !acceptedOffer) {
       toast({
-        title: "Error",
-        description: "Please enter a valid ticket URL",
+        title: t("common.error"),
+        description: t("ticketUpload.validUrl"),
         variant: "destructive",
       });
       return;
@@ -214,14 +228,14 @@ export default function AgencyRequestDetail() {
       setTicketUrl("");
       
       toast({
-        title: "Success",
-        description: "The ticket has been successfully uploaded",
+        title: t("common.success"),
+        description: t("ticketUpload.success"),
       });
     } catch (error) {
       console.error("Error uploading ticket:", error);
       toast({
-        title: "Error",
-        description: "Failed to upload ticket. Please try again.",
+        title: t("common.error"),
+        description: t("ticketUpload.error"),
         variant: "destructive",
       });
     } finally {
@@ -237,7 +251,7 @@ export default function AgencyRequestDetail() {
           className="mb-6"
           onClick={() => navigate("/requests")}
         >
-          <ArrowLeft className="mr-2 h-4 w-4" /> Back to requests
+          <ArrowLeft className="mr-2 h-4 w-4" /> {t("common.backToRequests")}
         </Button>
         
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -245,7 +259,7 @@ export default function AgencyRequestDetail() {
           <div className="lg:col-span-1">
             <Card>
               <CardHeader>
-                <CardTitle>Request Details</CardTitle>
+                <CardTitle>{t("requestDetail.details")}</CardTitle>
                 <div className="mt-2">{getStatusBadge()}</div>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -254,26 +268,32 @@ export default function AgencyRequestDetail() {
                     {request.departureCity} → {request.destinationCity}
                   </h3>
                   <p className="text-muted-foreground capitalize">
-                    {request.transportType}
+                    {t(`common.${request.transportType}`)}
                   </p>
                 </div>
                 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="font-medium">Departure</p>
+                    <p className="font-medium">{t("common.departure")}</p>
                     <p>{format(departureDate, "MMM d, yyyy")}</p>
                   </div>
                   {returnDate && (
                     <div>
-                      <p className="font-medium">Return</p>
+                      <p className="font-medium">{t("common.return")}</p>
                       <p>{format(returnDate, "MMM d, yyyy")}</p>
                     </div>
                   )}
                 </div>
                 
+                {request.preferences && (
+                  <div className="border-t border-border pt-4">
+                    <PreferencesDisplay preferences={request.preferences} />
+                  </div>
+                )}
+                
                 {request.additionalNotes && (
                   <div>
-                    <p className="font-medium">Additional Notes</p>
+                    <p className="font-medium">{t("common.additionalNotes")}</p>
                     <p className="text-muted-foreground">
                       {request.additionalNotes}
                     </p>
@@ -281,7 +301,7 @@ export default function AgencyRequestDetail() {
                 )}
                 
                 <div>
-                  <p className="font-medium">Request Date</p>
+                  <p className="font-medium">{t("common.requestDate")}</p>
                   <p className="text-muted-foreground">
                     {format(new Date(request.createdAt), "MMM d, yyyy")}
                   </p>
@@ -292,7 +312,7 @@ export default function AgencyRequestDetail() {
                     className="w-full mt-4"
                     onClick={() => setShowOfferDialog(true)}
                   >
-                    Create Offer
+                    {t("requestDetail.createOffer")}
                   </Button>
                 )}
               </CardContent>
@@ -304,18 +324,18 @@ export default function AgencyRequestDetail() {
             {/* My Offers */}
             <Card className="mb-6">
               <CardHeader>
-                <CardTitle>My Offers</CardTitle>
+                <CardTitle>{t("requestDetail.myOffers")}</CardTitle>
                 <CardDescription>
-                  Offers you've made for this request
+                  {t("requestDetail.myOffersDescription")}
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 {myOffers.length === 0 ? (
                   <div className="text-center py-8">
                     <FileText className="h-12 w-12 mx-auto text-muted-foreground opacity-50" />
-                    <h3 className="mt-4 text-lg font-medium">No offers yet</h3>
+                    <h3 className="mt-4 text-lg font-medium">{t("requestDetail.noOffers")}</h3>
                     <p className="text-muted-foreground mt-2 max-w-sm mx-auto">
-                      You haven't made any offers for this request yet.
+                      {t("requestDetail.noOffersDescription")}
                     </p>
                     
                     {canMakeOffer && (
@@ -323,7 +343,7 @@ export default function AgencyRequestDetail() {
                         className="mt-4"
                         onClick={() => setShowOfferDialog(true)}
                       >
-                        Create Offer
+                        {t("requestDetail.createOffer")}
                       </Button>
                     )}
                   </div>
@@ -341,35 +361,45 @@ export default function AgencyRequestDetail() {
                             <div>
                               <p className="font-medium text-lg">${offer.price.toFixed(2)}</p>
                               <p className="text-sm text-muted-foreground">
-                                Offered on {format(new Date(offer.createdAt), "MMM d, yyyy")}
+                                {t("requestDetail.offeredOn", { date: format(new Date(offer.createdAt), "MMM d, yyyy") })}
                               </p>
                             </div>
                             {offer.status === "pending" && (
-                              <Badge className="bg-brand-100 text-brand-800">Pending</Badge>
+                              <Badge className="bg-brand-100 text-brand-800">{t("offerStatus.pending")}</Badge>
                             )}
                             {offer.status === "accepted" && (
-                              <Badge className="bg-teal-500">Accepted</Badge>
+                              <Badge className="bg-teal-500">{t("offerStatus.accepted")}</Badge>
                             )}
                             {offer.status === "rejected" && (
-                              <Badge variant="outline" className="bg-red-100 text-red-800">Rejected</Badge>
+                              <Badge variant="outline" className="bg-red-100 text-red-800">{t("offerStatus.rejected")}</Badge>
                             )}
                             {offer.status === "completed" && (
-                              <Badge className="bg-green-500">Completed</Badge>
+                              <Badge className="bg-green-500">{t("offerStatus.completed")}</Badge>
                             )}
                           </div>
                           
                           <p className="mt-3">{offer.description}</p>
                           
+                          {/* Display which preferences are matched in the offer */}
+                          {request.preferences && offer.preferencesMatch && (
+                            <div className="mt-4 border-t border-border pt-4">
+                              <PreferencesDisplay 
+                                preferences={request.preferences} 
+                                preferencesMatch={offer.preferencesMatch}
+                              />
+                            </div>
+                          )}
+                          
                           {offer.departureTime && (
                             <div className="grid grid-cols-2 gap-4 mt-3">
                               <div>
-                                <p className="font-medium">Departure</p>
+                                <p className="font-medium">{t("common.departure")}</p>
                                 <p>{format(new Date(offer.departureTime), "MMM d, yyyy")}</p>
                                 <p>{format(new Date(offer.departureTime), "h:mm a")}</p>
                               </div>
                               {offer.returnTime && (
                                 <div>
-                                  <p className="font-medium">Return</p>
+                                  <p className="font-medium">{t("common.return")}</p>
                                   <p>{format(new Date(offer.returnTime), "MMM d, yyyy")}</p>
                                   <p>{format(new Date(offer.returnTime), "h:mm a")}</p>
                                 </div>
@@ -380,13 +410,13 @@ export default function AgencyRequestDetail() {
                           {isAccepted && offer.paymentReference && (
                             <div className="mt-4">
                               <Alert className="bg-brand-50 border-brand-200">
-                                <AlertTitle>Payment Information</AlertTitle>
+                                <AlertTitle>{t("payment.information")}</AlertTitle>
                                 <AlertDescription className="mt-2">
                                   <div className="font-mono bg-background border rounded p-2">
-                                    <div><span className="font-medium">Reference:</span> {offer.paymentReference}</div>
+                                    <div><span className="font-medium">{t("payment.reference")}:</span> {offer.paymentReference}</div>
                                   </div>
                                   <p className="text-sm mt-2">
-                                    The client should include this reference in their bank transfer.
+                                    {t("payment.referenceDescription")}
                                   </p>
                                 </AlertDescription>
                               </Alert>
@@ -397,7 +427,7 @@ export default function AgencyRequestDetail() {
                                   onClick={() => setShowUploadDialog(true)}
                                 >
                                   <Upload className="h-4 w-4 mr-2" />
-                                  Upload Ticket
+                                  {t("ticketUpload.uploadTicket")}
                                 </Button>
                               )}
                             </div>
@@ -406,9 +436,9 @@ export default function AgencyRequestDetail() {
                           {offer.ticketUrl && (
                             <div className="mt-4">
                               <Alert className="bg-green-50 border-green-200">
-                                <AlertTitle className="text-green-800">Ticket Uploaded</AlertTitle>
+                                <AlertTitle className="text-green-800">{t("ticketUpload.uploaded")}</AlertTitle>
                                 <AlertDescription className="text-green-700 mt-2">
-                                  You have successfully uploaded the ticket for this offer.
+                                  {t("ticketUpload.successDescription")}
                                 </AlertDescription>
                               </Alert>
                             </div>
@@ -426,9 +456,9 @@ export default function AgencyRequestDetail() {
               <Card className="bg-muted/30">
                 <CardContent className="text-center py-8">
                   <AlertCircle className="h-12 w-12 mx-auto text-muted-foreground opacity-50" />
-                  <h3 className="mt-4 text-lg font-medium">This request has been fulfilled</h3>
+                  <h3 className="mt-4 text-lg font-medium">{t("requestDetail.fulfilled")}</h3>
                   <p className="text-muted-foreground mt-2 max-w-md mx-auto">
-                    The client has accepted an offer from another agency. This request is no longer available for offers.
+                    {t("requestDetail.fulfilledDescription")}
                   </p>
                 </CardContent>
               </Card>
@@ -441,21 +471,21 @@ export default function AgencyRequestDetail() {
       <Dialog open={showOfferDialog} onOpenChange={setShowOfferDialog}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Create Offer</DialogTitle>
+            <DialogTitle>{t("offerForm.title")}</DialogTitle>
             <DialogDescription>
-              Submit your offer for this travel request
+              {t("offerForm.description")}
             </DialogDescription>
           </DialogHeader>
           
           <form onSubmit={handleCreateOffer} className="space-y-4">
             <div>
-              <Label htmlFor="price">Price ($)</Label>
+              <Label htmlFor="price">{t("offerForm.price")}</Label>
               <Input
                 id="price"
                 type="number"
                 min="0"
                 step="0.01"
-                placeholder="Enter price"
+                placeholder={t("offerForm.pricePlaceholder")}
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
                 required
@@ -463,10 +493,10 @@ export default function AgencyRequestDetail() {
             </div>
             
             <div>
-              <Label htmlFor="description">Description</Label>
+              <Label htmlFor="description">{t("offerForm.description")}</Label>
               <Textarea
                 id="description"
-                placeholder="Provide details about the offer, including stops, amenities, etc."
+                placeholder={t("offerForm.descriptionPlaceholder")}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 required
@@ -474,8 +504,20 @@ export default function AgencyRequestDetail() {
               />
             </div>
             
+            {/* Client Preferences Match Section */}
+            {request.preferences && Object.values(request.preferences).some(val => val) && (
+              <div className="border-t border-border pt-4">
+                <PreferencesDisplay 
+                  preferences={request.preferences}
+                  editable={true}
+                  preferencesMatch={preferencesMatch}
+                  onPreferenceMatchChange={handlePreferenceMatchChange}
+                />
+              </div>
+            )}
+            
             <div>
-              <Label>Departure Time</Label>
+              <Label>{t("offerForm.departureTime")}</Label>
               <div className="grid gap-2 mt-2">
                 <Popover>
                   <PopoverTrigger asChild>
@@ -490,7 +532,7 @@ export default function AgencyRequestDetail() {
                       {departureTime ? (
                         format(departureTime, "PPP")
                       ) : (
-                        <span>Select departure date</span>
+                        <span>{t("common.selectDate")}</span>
                       )}
                     </Button>
                   </PopoverTrigger>
@@ -523,7 +565,7 @@ export default function AgencyRequestDetail() {
             
             {returnDate && (
               <div>
-                <Label>Return Time</Label>
+                <Label>{t("offerForm.returnTime")}</Label>
                 <div className="grid gap-2 mt-2">
                   <Popover>
                     <PopoverTrigger asChild>
@@ -538,7 +580,7 @@ export default function AgencyRequestDetail() {
                         {returnTime ? (
                           format(returnTime, "PPP")
                         ) : (
-                          <span>Select return date</span>
+                          <span>{t("common.selectDate")}</span>
                         )}
                       </Button>
                     </PopoverTrigger>
@@ -576,13 +618,13 @@ export default function AgencyRequestDetail() {
                 variant="outline"
                 onClick={() => setShowOfferDialog(false)}
               >
-                Cancel
+                {t("common.cancel")}
               </Button>
               <Button
                 type="submit"
                 disabled={isSubmittingOffer}
               >
-                {isSubmittingOffer ? "Submitting..." : "Submit Offer"}
+                {isSubmittingOffer ? t("common.submitting") : t("offerForm.submit")}
               </Button>
             </DialogFooter>
           </form>
@@ -593,17 +635,17 @@ export default function AgencyRequestDetail() {
       <Dialog open={showUploadDialog} onOpenChange={setShowUploadDialog}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Upload Ticket</DialogTitle>
+            <DialogTitle>{t("ticketUpload.title")}</DialogTitle>
             <DialogDescription>
-              Upload the ticket for the client to download
+              {t("ticketUpload.description")}
             </DialogDescription>
           </DialogHeader>
           
           <form onSubmit={handleUploadTicket} className="space-y-4">
             <div>
-              <Label htmlFor="ticketUrl">Ticket URL</Label>
+              <Label htmlFor="ticketUrl">{t("ticketUpload.url")}</Label>
               <p className="text-sm text-muted-foreground mb-2">
-                In a real app, this would be a file upload. Enter a dummy URL for now.
+                {t("ticketUpload.note")}
               </p>
               <Input
                 id="ticketUrl"
@@ -621,13 +663,13 @@ export default function AgencyRequestDetail() {
                 variant="outline"
                 onClick={() => setShowUploadDialog(false)}
               >
-                Cancel
+                {t("common.cancel")}
               </Button>
               <Button
                 type="submit"
                 disabled={isUploadingTicket}
               >
-                {isUploadingTicket ? "Uploading..." : "Upload Ticket"}
+                {isUploadingTicket ? t("ticketUpload.uploading") : t("ticketUpload.upload")}
               </Button>
             </DialogFooter>
           </form>

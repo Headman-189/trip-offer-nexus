@@ -1,6 +1,6 @@
 
 import React, { createContext, useState, useContext, ReactNode } from "react";
-import { TravelRequest, TravelOffer, Notification } from "@/types";
+import { TravelRequest, TravelOffer, Notification, TravelPreferences, OfferPreferencesMatch } from "@/types";
 import { mockTravelRequests, mockTravelOffers, mockNotifications } from "@/lib/mock-data";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "./AuthContext";

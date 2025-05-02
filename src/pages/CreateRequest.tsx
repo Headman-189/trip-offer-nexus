@@ -10,14 +10,17 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { TransportType } from "@/types";
+import { TransportType, TravelPreferences } from "@/types";
 import { format } from "date-fns";
 import { Calendar } from "lucide-react";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
+import { PreferenceSelector } from "@/components/request/PreferenceSelector";
+import { useTranslation } from "react-i18next";
 
 export default function CreateRequest() {
+  const { t } = useTranslation();
   const { currentUser } = useAuth();
   const { createTravelRequest } = useData();
   const navigate = useNavigate();
@@ -30,6 +33,16 @@ export default function CreateRequest() {
   const [additionalNotes, setAdditionalNotes] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isRoundTrip, setIsRoundTrip] = useState(true);
+  const [preferences, setPreferences] = useState<TravelPreferences>({
+    travelClass: "economy",
+    cheapestOption: false,
+    comfortableOption: false,
+    noStopover: false,
+    longStopover: false,
+    insurance: false,
+    carRental: false,
+    privateDriver: false
+  });
 
   if (!currentUser) return null;
 
@@ -50,7 +63,8 @@ export default function CreateRequest() {
         departureDate: departureDate.toISOString(),
         returnDate: isRoundTrip && returnDate ? returnDate.toISOString() : undefined,
         transportType,
-        additionalNotes: additionalNotes || undefined
+        additionalNotes: additionalNotes || undefined,
+        preferences
       });
       
       navigate("/my-requests");
@@ -65,37 +79,37 @@ export default function CreateRequest() {
     <MainLayout>
       <div className="animate-fade-in">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold">Create Travel Request</h1>
+          <h1 className="text-3xl font-bold">{t("createRequest.title")}</h1>
           <p className="text-muted-foreground mt-1">
-            Fill in the details below to submit your travel request
+            {t("createRequest.subtitle")}
           </p>
         </div>
         
         <Card className="max-w-2xl mx-auto">
           <CardHeader>
-            <CardTitle>Travel Details</CardTitle>
+            <CardTitle>{t("createRequest.travelDetails")}</CardTitle>
             <CardDescription>
-              Enter your travel preferences to receive personalized offers from travel agencies
+              {t("createRequest.travelDetailsDescription")}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <Label htmlFor="departureCity">Departure City</Label>
+                  <Label htmlFor="departureCity">{t("common.departureCity")}</Label>
                   <Input
                     id="departureCity"
-                    placeholder="e.g., New York"
+                    placeholder={t("common.departureCityPlaceholder")}
                     value={departureCity}
                     onChange={(e) => setDepartureCity(e.target.value)}
                     required
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="destinationCity">Destination City</Label>
+                  <Label htmlFor="destinationCity">{t("common.destinationCity")}</Label>
                   <Input
                     id="destinationCity"
-                    placeholder="e.g., London"
+                    placeholder={t("common.destinationCityPlaceholder")}
                     value={destinationCity}
                     onChange={(e) => setDestinationCity(e.target.value)}
                     required
@@ -105,7 +119,7 @@ export default function CreateRequest() {
               
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <Label>Trip Type</Label>
+                  <Label>{t("common.tripType")}</Label>
                 </div>
                 <RadioGroup
                   value={isRoundTrip ? "roundTrip" : "oneWay"}
@@ -114,18 +128,18 @@ export default function CreateRequest() {
                 >
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="roundTrip" id="roundTrip" />
-                    <Label htmlFor="roundTrip">Round Trip</Label>
+                    <Label htmlFor="roundTrip">{t("common.roundTrip")}</Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="oneWay" id="oneWay" />
-                    <Label htmlFor="oneWay">One Way</Label>
+                    <Label htmlFor="oneWay">{t("common.oneWay")}</Label>
                   </div>
                 </RadioGroup>
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <Label htmlFor="departureDate">Departure Date</Label>
+                  <Label htmlFor="departureDate">{t("common.departureDate")}</Label>
                   <Popover>
                     <PopoverTrigger asChild>
                       <Button
@@ -139,7 +153,7 @@ export default function CreateRequest() {
                         {departureDate ? (
                           format(departureDate, "PPP")
                         ) : (
-                          <span>Select date</span>
+                          <span>{t("common.selectDate")}</span>
                         )}
                       </Button>
                     </PopoverTrigger>
@@ -157,7 +171,7 @@ export default function CreateRequest() {
                 
                 {isRoundTrip && (
                   <div className="space-y-2">
-                    <Label htmlFor="returnDate">Return Date</Label>
+                    <Label htmlFor="returnDate">{t("common.returnDate")}</Label>
                     <Popover>
                       <PopoverTrigger asChild>
                         <Button
@@ -171,7 +185,7 @@ export default function CreateRequest() {
                           {returnDate ? (
                             format(returnDate, "PPP")
                           ) : (
-                            <span>Select date</span>
+                            <span>{t("common.selectDate")}</span>
                           )}
                         </Button>
                       </PopoverTrigger>
@@ -193,7 +207,7 @@ export default function CreateRequest() {
               </div>
               
               <div className="space-y-2">
-                <Label>Transport Type</Label>
+                <Label>{t("common.transportType")}</Label>
                 <RadioGroup
                   value={transportType}
                   onValueChange={(value) => setTransportType(value as TransportType)}
@@ -201,20 +215,29 @@ export default function CreateRequest() {
                 >
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="flight" id="flight" />
-                    <Label htmlFor="flight">Flight</Label>
+                    <Label htmlFor="flight">{t("common.flight")}</Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="rail" id="rail" />
-                    <Label htmlFor="rail">Rail</Label>
+                    <Label htmlFor="rail">{t("common.rail")}</Label>
                   </div>
                 </RadioGroup>
               </div>
+
+              {/* Travel Preferences Section */}
+              <div className="border-t border-border pt-6">
+                <h3 className="text-lg font-semibold mb-4">{t("preferences.title")}</h3>
+                <PreferenceSelector 
+                  preferences={preferences}
+                  onChange={setPreferences}
+                />
+              </div>
               
               <div className="space-y-2">
-                <Label htmlFor="additionalNotes">Additional Notes (Optional)</Label>
+                <Label htmlFor="additionalNotes">{t("common.additionalNotes")}</Label>
                 <Textarea
                   id="additionalNotes"
-                  placeholder="Any preferences, requirements, or additional information"
+                  placeholder={t("common.additionalNotesPlaceholder")}
                   value={additionalNotes}
                   onChange={(e) => setAdditionalNotes(e.target.value)}
                   rows={4}
@@ -222,7 +245,7 @@ export default function CreateRequest() {
               </div>
               
               <Button type="submit" className="w-full" disabled={isSubmitting}>
-                {isSubmitting ? "Submitting..." : "Submit Request"}
+                {isSubmitting ? t("common.submitting") : t("common.submitRequest")}
               </Button>
             </form>
           </CardContent>
