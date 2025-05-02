@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -15,15 +14,22 @@ interface PerformanceChartProps {
   offers: TravelOffer[];
 }
 
+// Define the correct data type including the optional previous property
+interface ChartDataItem {
+  name: string;
+  current: number;
+  revenue: number;
+  previous?: number; // Add the optional previous property
+}
+
 const PerformanceChart = ({ offers }: PerformanceChartProps) => {
   const { t } = useTranslation();
   const [timeRange, setTimeRange] = useState<TimeRange>("monthly");
   const [comparison, setComparison] = useState<ComparisonType>("none");
 
   // Mock data - in a real app this would be derived from the actual offers
-  const generateMockData = (period: TimeRange, includeComparison: boolean = false) => {
-    const currentData = [];
-    const previousData = [];
+  const generateMockData = (period: TimeRange, includeComparison: boolean = false): ChartDataItem[] => {
+    const currentData: ChartDataItem[] = [];
 
     const getLabels = () => {
       switch (period) {
@@ -46,18 +52,17 @@ const PerformanceChart = ({ offers }: PerformanceChartProps) => {
     
     for (const label of labels) {
       const currentValue = Math.floor(Math.random() * 50) + 10;
-      const currentItem = {
+      const chartItem: ChartDataItem = {
         name: label,
         current: currentValue,
         revenue: currentValue * (Math.floor(Math.random() * 100) + 50),
       };
       
       if (includeComparison) {
-        const previousValue = Math.floor(Math.random() * 50) + 10;
-        currentItem.previous = previousValue;
+        chartItem.previous = Math.floor(Math.random() * 50) + 10;
       }
       
-      currentData.push(currentItem);
+      currentData.push(chartItem);
     }
 
     return currentData;
