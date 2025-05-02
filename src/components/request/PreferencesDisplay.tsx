@@ -4,7 +4,7 @@ import { TravelPreferences, OfferPreferencesMatch } from "@/types";
 import { 
   ArrowDown, 
   ArrowUp, 
-  Airplane, 
+  Plane, 
   Briefcase, 
   Ticket, 
   Bed, 
@@ -194,7 +194,7 @@ export const PreferencesDisplay = ({
             "flex items-center gap-2 p-2 rounded-md border",
             editable ? "border-gray-200" : "border-transparent"
           )}>
-            <Airplane className="h-4 w-4" />
+            <Plane className="h-4 w-4" />
             <span className="text-sm">{t("preferences.privateDriver")}</span>
             {editable && (
               <Checkbox 
