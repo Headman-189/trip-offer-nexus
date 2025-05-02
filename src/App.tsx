@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { DataProvider } from "@/contexts/DataContext";
 import Dashboard from "./pages/Dashboard";
@@ -16,6 +16,7 @@ import AgencyRequests from "./pages/AgencyRequests";
 import AgencyRequestDetail from "./pages/AgencyRequestDetail";
 import AgencyOffers from "./pages/AgencyOffers";
 import NotFound from "./pages/NotFound";
+import Index from "./pages/Index";
 
 const queryClient = new QueryClient();
 
@@ -26,14 +27,17 @@ const App = () => (
         <TooltipProvider>
           <Toaster />
           <Sonner />
-          <BrowserRouter>
+          <HashRouter>
             <Routes>
+              {/* Landing Route */}
+              <Route path="/" element={<Index />} />
+              
               {/* Auth Routes */}
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               
               {/* Main Routes */}
-              <Route path="/" element={<Dashboard />} />
+              <Route path="/dashboard" element={<Dashboard />} />
               
               {/* Client Routes */}
               <Route path="/my-requests" element={<ClientRequests />} />
@@ -48,7 +52,7 @@ const App = () => (
               {/* Catch-All Route */}
               <Route path="*" element={<NotFound />} />
             </Routes>
-          </BrowserRouter>
+          </HashRouter>
         </TooltipProvider>
       </DataProvider>
     </AuthProvider>
