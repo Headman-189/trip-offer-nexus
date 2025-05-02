@@ -1,0 +1,60 @@
+
+{
+  "common": {
+    "loading": "جار التحميل...",
+    "login": "تسجيل الدخول",
+    "register": "تسجيل",
+    "logout": "تسجيل الخروج",
+    "dashboard": "لوحة المعلومات",
+    "welcome": "مرحبًا مجددًا، {{name}}!",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "submit": "إرسال",
+    "createRequest": "إنشاء طلب جديد",
+    "viewAll": "عرض الكل"
+  },
+  "language": {
+    "en": "الإنجليزية",
+    "es": "الإسبانية",
+    "fr": "الفرنسية",
+    "ar": "العربية"
+  },
+  "dashboard": {
+    "activeRequests": "الطلبات النشطة",
+    "yourActiveRequests": "طلبات السفر الحالية الخاصة بك",
+    "availableRequests": "الطلبات المتاحة",
+    "requestsYouCanOffer": "الطلبات التي يمكنك تقديم عروض لها",
+    "activeOffers": "العروض النشطة",
+    "offersFromAgencies": "عروض من وكالات السفر",
+    "yourActiveOffers": "عروضك النشطة",
+    "offersYouMade": "العروض التي قدمتها",
+    "notifications": "الإشعارات",
+    "unreadNotifications": "إشعاراتك غير المقروءة",
+    "gettingStartedClient": "البدء كعميل",
+    "gettingStartedAgency": "البدء كوكالة سفر",
+    "analytics": "التحليلات",
+    "performance": "الأداء",
+    "comparisons": "المقارنات"
+  },
+  "landingPage": {
+    "title": "ابحث عن أفضل تذاكر السفر",
+    "subtitle": "تواصل مع أفضل وكالات السفر للحصول على عروض مخصصة",
+    "searchTravel": "بحث عن رحلة",
+    "from": "من",
+    "to": "إلى",
+    "departureDate": "تاريخ المغادرة",
+    "returnDate": "تاريخ العودة (اختياري)",
+    "transportType": "نوع النقل",
+    "rail": "قطار",
+    "flight": "طيران",
+    "search": "البحث عن تذاكر",
+    "howItWorks": "كيف يعمل",
+    "step1": "قدم طلب السفر الخاص بك",
+    "step2": "استلم عروض مخصصة",
+    "step3": "اختر العرض الأفضل وادفع",
+    "step4": "احصل على تذاكرك رقميًا",
+    "createAccount": "أنشئ حسابًا لاستلام العروض",
+    "alreadyMember": "هل لديك حساب بالفعل؟",
+    "loginHere": "تسجيل الدخول هنا"
+  }
+}

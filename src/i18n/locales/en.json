@@ -1,0 +1,60 @@
+
+{
+  "common": {
+    "loading": "Loading...",
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout",
+    "dashboard": "Dashboard",
+    "welcome": "Welcome back, {{name}}!",
+    "save": "Save",
+    "cancel": "Cancel",
+    "submit": "Submit",
+    "createRequest": "Create new request",
+    "viewAll": "View all"
+  },
+  "language": {
+    "en": "English",
+    "es": "Spanish",
+    "fr": "French",
+    "ar": "Arabic"
+  },
+  "dashboard": {
+    "activeRequests": "Active Requests",
+    "yourActiveRequests": "Your current travel requests",
+    "availableRequests": "Available Requests",
+    "requestsYouCanOffer": "Requests you can offer",
+    "activeOffers": "Active Offers",
+    "offersFromAgencies": "Offers from travel agencies",
+    "yourActiveOffers": "Your Active Offers",
+    "offersYouMade": "Offers you've made",
+    "notifications": "Notifications",
+    "unreadNotifications": "Your unread notifications",
+    "gettingStartedClient": "Getting Started as a Client",
+    "gettingStartedAgency": "Getting Started as a Travel Agency",
+    "analytics": "Analytics",
+    "performance": "Performance",
+    "comparisons": "Comparisons"
+  },
+  "landingPage": {
+    "title": "Find the Best Travel Tickets",
+    "subtitle": "Connect with top travel agencies for personalized offers",
+    "searchTravel": "Search Travel",
+    "from": "From",
+    "to": "To",
+    "departureDate": "Departure Date",
+    "returnDate": "Return Date (Optional)",
+    "transportType": "Transport Type",
+    "rail": "Rail",
+    "flight": "Flight",
+    "search": "Search for tickets",
+    "howItWorks": "How It Works",
+    "step1": "Submit your travel request",
+    "step2": "Receive personalized offers",
+    "step3": "Choose the best offer and pay",
+    "step4": "Get your tickets delivered digitally",
+    "createAccount": "Create an account to receive offers",
+    "alreadyMember": "Already have an account?",
+    "loginHere": "Login here"
+  }
+}

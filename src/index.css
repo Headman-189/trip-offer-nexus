@@ -43,6 +43,14 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+    
+    /* Pastel palette */
+    --pastel-blue: 210 100% 90%;
+    --pastel-green: 130 70% 90%;
+    --pastel-yellow: 60 100% 90%;
+    --pastel-pink: 340 100% 90%;
+    --pastel-purple: 270 100% 90%;
+    --pastel-teal: 180 70% 85%;
   }
 
   .dark {
@@ -82,6 +90,14 @@
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+    
+    /* Pastel palette - darker versions for dark mode */
+    --pastel-blue: 210 70% 25%;
+    --pastel-green: 130 50% 25%;
+    --pastel-yellow: 60 70% 25%;
+    --pastel-pink: 340 70% 25%;
+    --pastel-purple: 270 70% 25%;
+    --pastel-teal: 180 50% 25%;
   }
 }
 
@@ -93,6 +109,11 @@
   body {
     @apply bg-background text-foreground;
   }
+  
+  /* RTL support for Arabic */
+  html[dir="rtl"] * {
+    text-align: right;
+  }
 }
 
 @layer components {
@@ -101,5 +122,72 @@
   }
   .nav-link.active {
     @apply bg-primary text-primary-foreground hover:bg-primary/90;
+  }
+  
+  /* Pastel backgrounds */
+  .bg-pastel-blue {
+    @apply bg-[hsl(var(--pastel-blue))];
+  }
+  .bg-pastel-green {
+    @apply bg-[hsl(var(--pastel-green))];
+  }
+  .bg-pastel-yellow {
+    @apply bg-[hsl(var(--pastel-yellow))];
+  }
+  .bg-pastel-pink {
+    @apply bg-[hsl(var(--pastel-pink))];
+  }
+  .bg-pastel-purple {
+    @apply bg-[hsl(var(--pastel-purple))];
+  }
+  .bg-pastel-teal {
+    @apply bg-[hsl(var(--pastel-teal))];
+  }
+  
+  /* Gradient backgrounds */
+  .bg-gradient-teal-blue {
+    @apply bg-gradient-to-r from-teal-400 to-blue-500;
+  }
+  .bg-gradient-pink-purple {
+    @apply bg-gradient-to-r from-pink-400 to-purple-500;
+  }
+  .bg-gradient-yellow-orange {
+    @apply bg-gradient-to-r from-yellow-300 to-orange-400;
+  }
+}
+
+/* Animations */
+@layer utilities {
+  .animate-slide-in-right {
+    animation: slideInRight 0.3s ease-out;
+  }
+  
+  @keyframes slideInRight {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+  
+  .animate-bounce-in {
+    animation: bounceIn 0.5s ease-out;
+  }
+  
+  @keyframes bounceIn {
+    0% {
+      transform: scale(0.8);
+      opacity: 0;
+    }
+    70% {
+      transform: scale(1.05);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1);
+    }
   }
 }

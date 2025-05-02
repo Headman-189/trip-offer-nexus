@@ -17,6 +17,7 @@ import AgencyRequestDetail from "./pages/AgencyRequestDetail";
 import AgencyOffers from "./pages/AgencyOffers";
 import NotFound from "./pages/NotFound";
 import Index from "./pages/Index";
+import Landing from "./pages/Landing";
 
 const queryClient = new QueryClient();
 
@@ -29,8 +30,11 @@ const App = () => (
           <Sonner />
           <HashRouter>
             <Routes>
-              {/* Landing Route */}
-              <Route path="/" element={<Index />} />
+              {/* Landing Route for non-authenticated users */}
+              <Route path="/" element={<Landing />} />
+              
+              {/* Index Route - handles redirection logic */}
+              <Route path="/app" element={<Index />} />
               
               {/* Auth Routes */}
               <Route path="/login" element={<Login />} />

@@ -1,0 +1,60 @@
+
+{
+  "common": {
+    "loading": "Cargando...",
+    "login": "Iniciar sesión",
+    "register": "Registrarse",
+    "logout": "Cerrar sesión",
+    "dashboard": "Panel de control",
+    "welcome": "¡Bienvenido de nuevo, {{name}}!",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "submit": "Enviar",
+    "createRequest": "Crear nueva solicitud",
+    "viewAll": "Ver todo"
+  },
+  "language": {
+    "en": "Inglés",
+    "es": "Español",
+    "fr": "Francés",
+    "ar": "Árabe"
+  },
+  "dashboard": {
+    "activeRequests": "Solicitudes activas",
+    "yourActiveRequests": "Tus solicitudes de viaje actuales",
+    "availableRequests": "Solicitudes disponibles",
+    "requestsYouCanOffer": "Solicitudes a las que puedes ofertar",
+    "activeOffers": "Ofertas activas",
+    "offersFromAgencies": "Ofertas de agencias de viajes",
+    "yourActiveOffers": "Tus ofertas activas",
+    "offersYouMade": "Ofertas que has realizado",
+    "notifications": "Notificaciones",
+    "unreadNotifications": "Tus notificaciones no leídas",
+    "gettingStartedClient": "Comenzando como cliente",
+    "gettingStartedAgency": "Comenzando como agencia de viajes",
+    "analytics": "Análisis",
+    "performance": "Rendimiento",
+    "comparisons": "Comparaciones"
+  },
+  "landingPage": {
+    "title": "Encuentra los mejores billetes de viaje",
+    "subtitle": "Conéctate con las mejores agencias de viajes para ofertas personalizadas",
+    "searchTravel": "Buscar viaje",
+    "from": "Desde",
+    "to": "Hasta",
+    "departureDate": "Fecha de salida",
+    "returnDate": "Fecha de regreso (Opcional)",
+    "transportType": "Tipo de transporte",
+    "rail": "Tren",
+    "flight": "Avión",
+    "search": "Buscar billetes",
+    "howItWorks": "Cómo funciona",
+    "step1": "Envía tu solicitud de viaje",
+    "step2": "Recibe ofertas personalizadas",
+    "step3": "Elige la mejor oferta y paga",
+    "step4": "Recibe tus billetes digitalmente",
+    "createAccount": "Crea una cuenta para recibir ofertas",
+    "alreadyMember": "¿Ya tienes una cuenta?",
+    "loginHere": "Inicia sesión aquí"
+  }
+}

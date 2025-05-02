@@ -18,8 +18,8 @@ const Index = () => {
     return <Navigate to="/dashboard" replace />;
   }
 
-  // Otherwise, redirect to login
-  return <Navigate to="/login" replace />;
+  // Otherwise, redirect to the landing page
+  return <Navigate to="/" replace />;
 };
 
 export default Index;

@@ -1,0 +1,60 @@
+
+{
+  "common": {
+    "loading": "Chargement...",
+    "login": "Se connecter",
+    "register": "S'inscrire",
+    "logout": "Se déconnecter",
+    "dashboard": "Tableau de bord",
+    "welcome": "Bienvenue, {{name}} !",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "submit": "Soumettre",
+    "createRequest": "Créer une nouvelle demande",
+    "viewAll": "Voir tout"
+  },
+  "language": {
+    "en": "Anglais",
+    "es": "Espagnol",
+    "fr": "Français",
+    "ar": "Arabe"
+  },
+  "dashboard": {
+    "activeRequests": "Demandes actives",
+    "yourActiveRequests": "Vos demandes de voyage actuelles",
+    "availableRequests": "Demandes disponibles",
+    "requestsYouCanOffer": "Demandes auxquelles vous pouvez proposer",
+    "activeOffers": "Offres actives",
+    "offersFromAgencies": "Offres des agences de voyage",
+    "yourActiveOffers": "Vos offres actives",
+    "offersYouMade": "Offres que vous avez faites",
+    "notifications": "Notifications",
+    "unreadNotifications": "Vos notifications non lues",
+    "gettingStartedClient": "Débuter en tant que client",
+    "gettingStartedAgency": "Débuter en tant qu'agence de voyage",
+    "analytics": "Analyses",
+    "performance": "Performance",
+    "comparisons": "Comparaisons"
+  },
+  "landingPage": {
+    "title": "Trouvez les meilleurs billets de voyage",
+    "subtitle": "Connectez-vous avec les meilleures agences de voyage pour des offres personnalisées",
+    "searchTravel": "Rechercher un voyage",
+    "from": "De",
+    "to": "À",
+    "departureDate": "Date de départ",
+    "returnDate": "Date de retour (Optionnel)",
+    "transportType": "Type de transport",
+    "rail": "Train",
+    "flight": "Avion",
+    "search": "Rechercher des billets",
+    "howItWorks": "Comment ça marche",
+    "step1": "Soumettez votre demande de voyage",
+    "step2": "Recevez des offres personnalisées",
+    "step3": "Choisissez la meilleure offre et payez",
+    "step4": "Recevez vos billets numériquement",
+    "createAccount": "Créez un compte pour recevoir des offres",
+    "alreadyMember": "Vous avez déjà un compte ?",
+    "loginHere": "Connectez-vous ici"
+  }
+}
