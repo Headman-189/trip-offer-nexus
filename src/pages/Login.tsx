@@ -16,28 +16,28 @@ export default function Login() {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!email || !password) {
-      toast({
-        title: "Error",
-        description: "Please enter your email and password",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    setIsLoading(true);
-    try {
-      await login(email, password);
-      navigate("/");
-    } catch (error) {
-      console.error("Login error:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+ const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  
+  if (!email || !password) {
+    toast({
+      title: "Error",
+      description: "Please enter your email and password",
+      variant: "destructive",
+    });
+    return;
+  }
+  
+  setIsLoading(true);
+  try {
+    await login(email, password);
+    navigate("/");  // Redirection après connexion
+  } catch (error) {
+    console.error("Login error:", error);
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   // Demo accounts for easy testing
   const demoAccounts = [
