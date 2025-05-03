@@ -99,9 +99,12 @@ export interface Transaction {
 export interface Notification {
   id: string;
   userId: string;
+  userRole?: UserRole;
   title: string;
   message: string;
   type: 'info' | 'success' | 'warning' | 'error';
   isRead: boolean;
+  relatedRequestId?: string;
+  relatedOfferId?: string;
   createdAt: string;
 }

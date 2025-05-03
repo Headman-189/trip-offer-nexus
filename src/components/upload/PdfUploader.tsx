@@ -1,95 +1,176 @@
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { FileText, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "react-i18next";
 
 interface PdfUploaderProps {
-  onFileUploaded: (fileUrl: string) => void;
-  className?: string;
+  onUploadComplete: (fileUrl: string) => void;
+  isUploading?: boolean;
 }
 
-const PdfUploader = ({ onFileUploaded, className }: PdfUploaderProps) => {
+const PdfUploader = ({ onUploadComplete, isUploading = false }: PdfUploaderProps) => {
   const { t } = useTranslation();
+  const [file, setFile] = useState<File | null>(null);
+  const [fileName, setFileName] = useState<string>("");
+  const [previewUrl, setPreviewUrl] = useState<string>("");
+  const [uploadProgress, setUploadProgress] = useState<number>(0);
+  const [error, setError] = useState<string>("");
+  const [uploading, setUploading] = useState<boolean>(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
-  const [isDragging, setIsDragging] = useState(false);
-  const [isUploading, setIsUploading] = useState(false);
-  const [fileName, setFileName] = useState<string | null>(null);
-
-  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = () => {
-    setIsDragging(false);
-  };
-
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    setIsDragging(false);
-    
-    const files = e.dataTransfer.files;
-    if (files.length) {
-      handleFile(files[0]);
-    }
-  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files && files.length) {
-      handleFile(files[0]);
+    if (e.target.files && e.target.files.length > 0) {
+      const selectedFile = e.target.files[0];
+      
+      // Vérifier que le fichier est un PDF
+      if (selectedFile.type !== "application/pdf") {
+        setError(t("upload.onlyPdf"));
+        toast({
+          title: t("common.error"),
+          description: t("upload.onlyPdf"),
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      setFile(selectedFile);
+      setFileName(selectedFile.name);
+      setError("");
+      
+      // Créer une URL d'aperçu
+      const objectUrl = URL.createObjectURL(selectedFile);
+      setPreviewUrl(objectUrl);
     }
   };
-
-  const handleFile = (file: File) => {
-    if (file.type !== "application/pdf") {
+  
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.currentTarget.classList.add("border-primary");
+  };
+  
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.currentTarget.classList.remove("border-primary");
+  };
+  
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.currentTarget.classList.remove("border-primary");
+    
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      const droppedFile = e.dataTransfer.files[0];
+      
+      // Vérifier que le fichier est un PDF
+      if (droppedFile.type !== "application/pdf") {
+        setError(t("upload.onlyPdf"));
+        toast({
+          title: t("common.error"),
+          description: t("upload.onlyPdf"),
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      setFile(droppedFile);
+      setFileName(droppedFile.name);
+      setError("");
+      
+      // Créer une URL d'aperçu
+      const objectUrl = URL.createObjectURL(droppedFile);
+      setPreviewUrl(objectUrl);
+    }
+  };
+  
+  const handleUpload = async () => {
+    if (!file) return;
+    
+    setUploading(true);
+    setUploadProgress(0);
+    
+    // Simuler le téléchargement avec un délai progressif
+    const timer = setInterval(() => {
+      setUploadProgress(prev => {
+        if (prev >= 95) {
+          clearInterval(timer);
+          return 95;
+        }
+        return prev + 5;
+      });
+    }, 150);
+    
+    try {
+      // Simuler une requête de téléversement
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Générer une URL fictive pour le PDF
+      const mockPdfUrl = `https://example.com/uploads/${Date.now()}_${fileName.replace(/\s+/g, '_')}`;
+      
+      clearInterval(timer);
+      setUploadProgress(100);
+      
+      // Attendre un peu avant de signaler que c'est terminé
+      setTimeout(() => {
+        onUploadComplete(mockPdfUrl);
+        setUploading(false);
+        toast({
+          title: t("upload.success"),
+          description: fileName,
+        });
+      }, 500);
+    } catch (error) {
+      clearInterval(timer);
+      setUploading(false);
+      setError(t("upload.error"));
       toast({
-        title: t("upload.error"),
-        description: t("upload.onlyPdf"),
+        title: t("common.error"),
+        description: t("upload.error"),
         variant: "destructive",
       });
-      return;
     }
-
-    setIsUploading(true);
-    setFileName(file.name);
-
-    // Simulate upload process
-    setTimeout(() => {
-      // In a real app, you would upload to a server and get a URL
-      const mockPdfUrl = `pdf-${Date.now()}-${file.name}`;
-      
-      setIsUploading(false);
-      toast({
-        title: t("upload.success"),
-        description: file.name,
-      });
-      
-      onFileUploaded(mockPdfUrl);
-    }, 1500);
+  };
+  
+  const handleBrowseClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
   };
 
   return (
-    <div className={`w-full ${className || ""}`}>
-      <div
-        className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors
-          ${isDragging ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"}`}
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
-        onDrop={handleDrop}
-        onClick={() => document.getElementById("pdf-upload")?.click()}
-      >
-        <input
-          type="file"
-          id="pdf-upload"
-          className="hidden"
-          accept=".pdf"
-          onChange={handleFileChange}
-          disabled={isUploading}
-        />
-        
+    <div className="w-full">
+      <input
+        type="file"
+        ref={fileInputRef}
+        accept=".pdf"
+        onChange={handleFileChange}
+        className="hidden"
+      />
+      
+      {!file && !uploading ? (
+        <div
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+          className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-primary cursor-pointer transition-colors"
+          onClick={handleBrowseClick}
+        >
+          <div className="flex flex-col items-center justify-center space-y-2">
+            <Upload className="h-12 w-12 text-gray-400" />
+            <p className="text-lg font-medium">{t("upload.selectFile")}</p>
+            <p className="text-sm text-muted-foreground">
+              {t("upload.drag")}
+            </p>
+            <p className="text-sm text-muted-foreground">
+              {t("upload.or")}
+            </p>
+            <Button type="button" variant="secondary" onClick={handleBrowseClick}>
+              {t("upload.browse")}
+            </Button>
+          </div>
+        </div>
+      ) : (
         <div className="flex flex-col items-center justify-center space-y-2">
           {fileName ? (
             <div className="flex items-center space-x-2">
@@ -97,26 +178,48 @@ const PdfUploader = ({ onFileUploaded, className }: PdfUploaderProps) => {
               <span className="font-medium truncate max-w-[200px]">{fileName}</span>
             </div>
           ) : (
-            <>
-              <Upload className="h-10 w-10 text-muted-foreground mb-2" />
-              <p className="text-lg font-medium">{t("upload.drag")}</p>
-              <p className="text-sm text-muted-foreground">{t("upload.or")}</p>
-              <Button variant="outline" disabled={isUploading}>
-                {t("upload.browse")}
-              </Button>
-            </>
+            <FileText className="h-8 w-8 text-gray-400" />
           )}
           
-          {isUploading && (
-            <div className="mt-4">
-              <div className="w-full bg-secondary rounded-full h-2.5">
-                <div className="bg-primary h-2.5 rounded-full animate-pulse w-3/4"></div>
-              </div>
-              <p className="text-sm text-muted-foreground mt-2">{t("upload.uploading")}</p>
+          {uploadProgress > 0 && uploadProgress < 100 && (
+            <div className="w-full bg-gray-200 rounded-full h-2.5 mt-2">
+              <div
+                className="bg-primary h-2.5 rounded-full"
+                style={{ width: `${uploadProgress}%` }}
+              ></div>
             </div>
           )}
+          
+          {error && (
+            <p className="text-sm text-destructive">{error}</p>
+          )}
+          
+          <div className="flex space-x-2 mt-4">
+            <Button
+              variant="outline"
+              onClick={() => {
+                setFile(null);
+                setFileName("");
+                setPreviewUrl("");
+                setError("");
+                setUploadProgress(0);
+              }}
+              disabled={uploading || isUploading}
+            >
+              {t("common.cancel")}
+            </Button>
+            
+            {file && !uploading && (
+              <Button
+                onClick={handleUpload}
+                disabled={uploading || isUploading}
+              >
+                {uploading ? t("upload.uploading") : t("upload.upload")}
+              </Button>
+            )}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

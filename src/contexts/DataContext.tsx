@@ -1,4 +1,3 @@
-
 import React, { createContext, useState, useContext, ReactNode } from "react";
 import { TravelRequest, TravelOffer, Notification, TravelPreferences, OfferPreferencesMatch, Transaction } from "@/types";
 import { mockTravelRequests, mockTravelOffers, mockNotifications } from "@/lib/mock-data";
@@ -23,8 +22,8 @@ interface DataContextType {
   
   // Notifications
   notifications: Notification[];
-  getUserNotifications: (userId: string) => Notification[];
-  markNotificationAsRead: (id: string) => Promise<void>;
+  getUserNotifications: (userId?: string) => Notification[];
+  markNotificationAsRead: (notificationId: string) => Promise<void>;
   createNotification: (notification: Omit<Notification, "id" | "createdAt" | "isRead">) => Promise<void>;
   
   // Transactions
@@ -38,7 +37,10 @@ const DataContext = createContext<DataContextType | undefined>(undefined);
 export function DataProvider({ children }: { children: ReactNode }) {
   const [travelRequests, setTravelRequests] = useState<TravelRequest[]>(mockTravelRequests);
   const [travelOffers, setTravelOffers] = useState<TravelOffer[]>(mockTravelOffers);
-  const [notifications, setNotifications] = useState<Notification[]>(mockNotifications);
+  const [notifications, setNotifications] = useState<Notification[]>([
+    ...mockNotifications,
+    // Add more mock notifications if needed
+  ]);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const { toast } = useToast();
   const { currentUser, updateUserProfile } = useAuth();
@@ -295,19 +297,28 @@ export function DataProvider({ children }: { children: ReactNode }) {
   };
 
   // Notifications Functions
-  const getUserNotifications = (userId: string) => {
-    return notifications.filter(notification => notification.userId === userId);
+  const getUserNotifications = (userId?: string) => {
+    const { currentUser } = useAuth();
+    const targetUserId = userId || currentUser?.id;
+    
+    if (!targetUserId) return [];
+    
+    return notifications.filter(notification => notification.userId === targetUserId);
   };
-
-  const markNotificationAsRead = async (id: string) => {
-    // Simulate API call
+  
+  const markNotificationAsRead = async (notificationId: string) => {
+    // Simulate API call delay
     await new Promise(resolve => setTimeout(resolve, 300));
     
     setNotifications(prev => 
       prev.map(notification => 
-        notification.id === id ? { ...notification, isRead: true } : notification
+        notification.id === notificationId 
+          ? { ...notification, isRead: true } 
+          : notification
       )
     );
+    
+    return Promise.resolve();
   };
 
   const createNotification = async (notification: Omit<Notification, "id" | "createdAt" | "isRead">) => {

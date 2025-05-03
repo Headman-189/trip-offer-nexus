@@ -4,17 +4,11 @@ import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import Backend from 'i18next-http-backend';
 
-import enTranslation from './locales/en.json';
-import esTranslation from './locales/es.json';
 import frTranslation from './locales/fr.json';
-import arTranslation from './locales/ar.json';
 
-// Define resources object
+// Define resources object with only French
 const resources = {
-  en: { translation: enTranslation },
-  es: { translation: esTranslation },
-  fr: { translation: frTranslation },
-  ar: { translation: arTranslation }
+  fr: { translation: frTranslation }
 };
 
 i18n
@@ -23,8 +17,9 @@ i18n
   .use(initReactI18next)
   .init({
     resources,
-    fallbackLng: 'en',
-    debug: true,
+    lng: 'fr', // Force French language
+    fallbackLng: 'fr',
+    debug: false,
     interpolation: {
       escapeValue: false,
     },

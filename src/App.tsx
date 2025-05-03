@@ -20,6 +20,8 @@ import ClientWallet from "./pages/ClientWallet";
 import NotFound from "./pages/NotFound";
 import Index from "./pages/Index";
 import Landing from "./pages/Landing";
+import ClientProfile from "./pages/ClientProfile";
+import Notification from "./pages/Notification";
 
 const queryClient = new QueryClient();
 
@@ -50,6 +52,8 @@ const App = () => (
               <Route path="/create-request" element={<CreateRequest />} />
               <Route path="/request/:id" element={<RequestDetail />} />
               <Route path="/wallet" element={<ClientWallet />} />
+              <Route path="/profile" element={<ClientProfile />} />
+              <Route path="/notification/:id" element={<Notification />} />
               
               {/* Agency Routes */}
               <Route path="/requests" element={<AgencyRequests />} />

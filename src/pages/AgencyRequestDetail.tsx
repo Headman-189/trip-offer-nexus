@@ -33,6 +33,7 @@ import {
 } from "@/components/ui/popover";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { format } from "date-fns";
+import { fr } from "date-fns/locale";
 import { Calendar } from "@/components/ui/calendar";
 import { PreferencesDisplay } from "@/components/request/PreferencesDisplay";
 import { OfferPreferencesMatch } from "@/types";
@@ -40,6 +41,7 @@ import { cn } from "@/lib/utils";
 import { FileText, ArrowLeft, AlertCircle, Upload, Calendar as CalendarIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "react-i18next";
+import PdfUploader from "@/components/upload/PdfUploader";
 
 export default function AgencyRequestDetail() {
   const { t } = useTranslation();
@@ -64,7 +66,7 @@ export default function AgencyRequestDetail() {
   const [preferencesMatch, setPreferencesMatch] = useState<OfferPreferencesMatch>({});
   
   // State for uploading a ticket
-  const [ticketUrl, setTicketUrl] = useState(""); // In a real app, this would be a file upload
+  const [ticketUrl, setTicketUrl] = useState("");
   const [isUploadingTicket, setIsUploadingTicket] = useState(false);
   const [showUploadDialog, setShowUploadDialog] = useState(false);
   
@@ -118,17 +120,17 @@ export default function AgencyRequestDetail() {
   const getStatusBadge = () => {
     switch (request.status) {
       case "pending":
-        return <Badge variant="outline" className="bg-gray-100">{t("requestStatus.awaitingOffers")}</Badge>;
+        return <Badge variant="outline" className="bg-gray-100">{t("common.awaitingOffers")}</Badge>;
       case "offers_received":
-        return <Badge className="bg-brand-500">{t("requestStatus.hasOffers")}</Badge>;
+        return <Badge className="bg-brand-500">{t("common.hasOffers")}</Badge>;
       case "accepted":
-        return <Badge className="bg-teal-500">{t("requestStatus.offerAccepted")}</Badge>;
+        return <Badge className="bg-teal-500">{t("common.offerAccepted")}</Badge>;
       case "completed":
-        return <Badge className="bg-green-500">{t("requestStatus.completed")}</Badge>;
+        return <Badge className="bg-green-500">{t("common.completed")}</Badge>;
       case "canceled":
-        return <Badge variant="destructive">{t("requestStatus.canceled")}</Badge>;
+        return <Badge variant="destructive">{t("common.canceled")}</Badge>;
       default:
-        return <Badge variant="outline">{t("requestStatus.unknown")}</Badge>;
+        return <Badge variant="outline">{t("common.unknown")}</Badge>;
     }
   };
 
@@ -145,7 +147,7 @@ export default function AgencyRequestDetail() {
     if (!price || !description || !departureTime) {
       toast({
         title: t("common.error"),
-        description: t("offerForm.fillAllFields"),
+        description: t("common.fillAllFields"),
         variant: "destructive",
       });
       return;
@@ -154,7 +156,7 @@ export default function AgencyRequestDetail() {
     if (request.returnDate && !returnTime) {
       toast({
         title: t("common.error"),
-        description: t("offerForm.returnTimeRequired"),
+        description: t("common.returnTimeRequired"),
         variant: "destructive",
       });
       return;
@@ -164,7 +166,7 @@ export default function AgencyRequestDetail() {
     if (isNaN(numericPrice) || numericPrice <= 0) {
       toast({
         title: t("common.error"),
-        description: t("offerForm.invalidPrice"),
+        description: t("common.invalidPrice"),
         variant: "destructive",
       });
       return;
@@ -177,7 +179,7 @@ export default function AgencyRequestDetail() {
         agencyId: currentUser.id,
         agencyName: currentUser.name,
         price: numericPrice,
-        currency: "USD",
+        currency: "MAD",
         description,
         departureTime: departureTime.toISOString(),
         returnTime: returnTime ? returnTime.toISOString() : undefined,
@@ -194,13 +196,13 @@ export default function AgencyRequestDetail() {
       
       toast({
         title: t("common.success"),
-        description: t("offerForm.offerSubmitted"),
+        description: t("common.offerSubmitted"),
       });
     } catch (error) {
       console.error("Error creating offer:", error);
       toast({
         title: t("common.error"),
-        description: t("offerForm.submitError"),
+        description: t("common.submitError"),
         variant: "destructive",
       });
     } finally {
@@ -208,34 +210,25 @@ export default function AgencyRequestDetail() {
     }
   };
 
-  const handleUploadTicket = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!ticketUrl || !acceptedOffer) {
-      toast({
-        title: t("common.error"),
-        description: t("ticketUpload.validUrl"),
-        variant: "destructive",
-      });
-      return;
-    }
+  const handleTicketUploadComplete = async (fileUrl: string) => {
+    if (!acceptedOffer) return;
     
     setIsUploadingTicket(true);
     try {
-      await uploadTicket(acceptedOffer.id, ticketUrl);
+      await uploadTicket(acceptedOffer.id, fileUrl);
       
       setShowUploadDialog(false);
       setTicketUrl("");
       
       toast({
         title: t("common.success"),
-        description: t("ticketUpload.success"),
+        description: t("common.ticketUploaded"),
       });
     } catch (error) {
       console.error("Error uploading ticket:", error);
       toast({
         title: t("common.error"),
-        description: t("ticketUpload.error"),
+        description: t("common.uploadError"),
         variant: "destructive",
       });
     } finally {
@@ -259,7 +252,7 @@ export default function AgencyRequestDetail() {
           <div className="lg:col-span-1">
             <Card>
               <CardHeader>
-                <CardTitle>{t("requestDetail.details")}</CardTitle>
+                <CardTitle>{t("common.details")}</CardTitle>
                 <div className="mt-2">{getStatusBadge()}</div>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -268,19 +261,19 @@ export default function AgencyRequestDetail() {
                     {request.departureCity} → {request.destinationCity}
                   </h3>
                   <p className="text-muted-foreground capitalize">
-                    {t(`common.${request.transportType}`)}
+                    {request.transportType === 'rail' ? t("common.rail") : t("common.flight")}
                   </p>
                 </div>
                 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <p className="font-medium">{t("common.departure")}</p>
-                    <p>{format(departureDate, "MMM d, yyyy")}</p>
+                    <p>{format(departureDate, "dd/MM/yyyy", {locale: fr})}</p>
                   </div>
                   {returnDate && (
                     <div>
                       <p className="font-medium">{t("common.return")}</p>
-                      <p>{format(returnDate, "MMM d, yyyy")}</p>
+                      <p>{format(returnDate, "dd/MM/yyyy", {locale: fr})}</p>
                     </div>
                   )}
                 </div>
@@ -303,7 +296,7 @@ export default function AgencyRequestDetail() {
                 <div>
                   <p className="font-medium">{t("common.requestDate")}</p>
                   <p className="text-muted-foreground">
-                    {format(new Date(request.createdAt), "MMM d, yyyy")}
+                    {format(new Date(request.createdAt), "dd/MM/yyyy", {locale: fr})}
                   </p>
                 </div>
                 
@@ -312,7 +305,7 @@ export default function AgencyRequestDetail() {
                     className="w-full mt-4"
                     onClick={() => setShowOfferDialog(true)}
                   >
-                    {t("requestDetail.createOffer")}
+                    {t("common.createOffer")}
                   </Button>
                 )}
               </CardContent>
@@ -324,18 +317,18 @@ export default function AgencyRequestDetail() {
             {/* My Offers */}
             <Card className="mb-6">
               <CardHeader>
-                <CardTitle>{t("requestDetail.myOffers")}</CardTitle>
+                <CardTitle>{t("common.myOffers")}</CardTitle>
                 <CardDescription>
-                  {t("requestDetail.myOffersDescription")}
+                  {t("common.myOffersDescription")}
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 {myOffers.length === 0 ? (
                   <div className="text-center py-8">
                     <FileText className="h-12 w-12 mx-auto text-muted-foreground opacity-50" />
-                    <h3 className="mt-4 text-lg font-medium">{t("requestDetail.noOffers")}</h3>
+                    <h3 className="mt-4 text-lg font-medium">{t("common.noOffers")}</h3>
                     <p className="text-muted-foreground mt-2 max-w-sm mx-auto">
-                      {t("requestDetail.noOffersDescription")}
+                      {t("common.noOffersDescription")}
                     </p>
                     
                     {canMakeOffer && (
@@ -343,7 +336,7 @@ export default function AgencyRequestDetail() {
                         className="mt-4"
                         onClick={() => setShowOfferDialog(true)}
                       >
-                        {t("requestDetail.createOffer")}
+                        {t("common.createOffer")}
                       </Button>
                     )}
                   </div>
@@ -359,22 +352,22 @@ export default function AgencyRequestDetail() {
                         >
                           <div className="flex justify-between items-start">
                             <div>
-                              <p className="font-medium text-lg">${offer.price.toFixed(2)}</p>
+                              <p className="font-medium text-lg">{offer.price.toFixed(2)} {t("wallet.currency")}</p>
                               <p className="text-sm text-muted-foreground">
-                                {t("requestDetail.offeredOn", { date: format(new Date(offer.createdAt), "MMM d, yyyy") })}
+                                {t("common.offeredOn", { date: format(new Date(offer.createdAt), "dd/MM/yyyy", {locale: fr}) })}
                               </p>
                             </div>
                             {offer.status === "pending" && (
-                              <Badge className="bg-brand-100 text-brand-800">{t("offerStatus.pending")}</Badge>
+                              <Badge className="bg-brand-100 text-brand-800">{t("common.pending")}</Badge>
                             )}
                             {offer.status === "accepted" && (
-                              <Badge className="bg-teal-500">{t("offerStatus.accepted")}</Badge>
+                              <Badge className="bg-teal-500">{t("common.accepted")}</Badge>
                             )}
                             {offer.status === "rejected" && (
-                              <Badge variant="outline" className="bg-red-100 text-red-800">{t("offerStatus.rejected")}</Badge>
+                              <Badge variant="outline" className="bg-red-100 text-red-800">{t("common.rejected")}</Badge>
                             )}
                             {offer.status === "completed" && (
-                              <Badge className="bg-green-500">{t("offerStatus.completed")}</Badge>
+                              <Badge className="bg-green-500">{t("common.completed")}</Badge>
                             )}
                           </div>
                           
@@ -394,14 +387,14 @@ export default function AgencyRequestDetail() {
                             <div className="grid grid-cols-2 gap-4 mt-3">
                               <div>
                                 <p className="font-medium">{t("common.departure")}</p>
-                                <p>{format(new Date(offer.departureTime), "MMM d, yyyy")}</p>
-                                <p>{format(new Date(offer.departureTime), "h:mm a")}</p>
+                                <p>{format(new Date(offer.departureTime), "dd/MM/yyyy", {locale: fr})}</p>
+                                <p>{format(new Date(offer.departureTime), "HH:mm", {locale: fr})}</p>
                               </div>
                               {offer.returnTime && (
                                 <div>
                                   <p className="font-medium">{t("common.return")}</p>
-                                  <p>{format(new Date(offer.returnTime), "MMM d, yyyy")}</p>
-                                  <p>{format(new Date(offer.returnTime), "h:mm a")}</p>
+                                  <p>{format(new Date(offer.returnTime), "dd/MM/yyyy", {locale: fr})}</p>
+                                  <p>{format(new Date(offer.returnTime), "HH:mm", {locale: fr})}</p>
                                 </div>
                               )}
                             </div>
@@ -410,13 +403,13 @@ export default function AgencyRequestDetail() {
                           {isAccepted && offer.paymentReference && (
                             <div className="mt-4">
                               <Alert className="bg-brand-50 border-brand-200">
-                                <AlertTitle>{t("payment.information")}</AlertTitle>
+                                <AlertTitle>{t("common.payment")}</AlertTitle>
                                 <AlertDescription className="mt-2">
                                   <div className="font-mono bg-background border rounded p-2">
-                                    <div><span className="font-medium">{t("payment.reference")}:</span> {offer.paymentReference}</div>
+                                    <div><span className="font-medium">{t("common.reference")}:</span> {offer.paymentReference}</div>
                                   </div>
                                   <p className="text-sm mt-2">
-                                    {t("payment.referenceDescription")}
+                                    {t("common.referenceDescription")}
                                   </p>
                                 </AlertDescription>
                               </Alert>
@@ -427,7 +420,7 @@ export default function AgencyRequestDetail() {
                                   onClick={() => setShowUploadDialog(true)}
                                 >
                                   <Upload className="h-4 w-4 mr-2" />
-                                  {t("ticketUpload.uploadTicket")}
+                                  {t("common.uploadTicket")}
                                 </Button>
                               )}
                             </div>
@@ -436,9 +429,9 @@ export default function AgencyRequestDetail() {
                           {offer.ticketUrl && (
                             <div className="mt-4">
                               <Alert className="bg-green-50 border-green-200">
-                                <AlertTitle className="text-green-800">{t("ticketUpload.uploaded")}</AlertTitle>
+                                <AlertTitle className="text-green-800">{t("common.uploaded")}</AlertTitle>
                                 <AlertDescription className="text-green-700 mt-2">
-                                  {t("ticketUpload.successDescription")}
+                                  {t("common.successDescription")}
                                 </AlertDescription>
                               </Alert>
                             </div>
@@ -456,9 +449,9 @@ export default function AgencyRequestDetail() {
               <Card className="bg-muted/30">
                 <CardContent className="text-center py-8">
                   <AlertCircle className="h-12 w-12 mx-auto text-muted-foreground opacity-50" />
-                  <h3 className="mt-4 text-lg font-medium">{t("requestDetail.fulfilled")}</h3>
+                  <h3 className="mt-4 text-lg font-medium">{t("common.fulfilled")}</h3>
                   <p className="text-muted-foreground mt-2 max-w-md mx-auto">
-                    {t("requestDetail.fulfilledDescription")}
+                    {t("common.fulfilledDescription")}
                   </p>
                 </CardContent>
               </Card>
@@ -471,21 +464,21 @@ export default function AgencyRequestDetail() {
       <Dialog open={showOfferDialog} onOpenChange={setShowOfferDialog}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>{t("offerForm.title")}</DialogTitle>
+            <DialogTitle>{t("common.createOffer")}</DialogTitle>
             <DialogDescription>
-              {t("offerForm.description")}
+              {t("common.createOfferDescription")}
             </DialogDescription>
           </DialogHeader>
           
           <form onSubmit={handleCreateOffer} className="space-y-4">
             <div>
-              <Label htmlFor="price">{t("offerForm.price")}</Label>
+              <Label htmlFor="price">{t("common.price")} ({t("wallet.currency")})</Label>
               <Input
                 id="price"
                 type="number"
                 min="0"
                 step="0.01"
-                placeholder={t("offerForm.pricePlaceholder")}
+                placeholder="0.00"
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
                 required
@@ -493,10 +486,10 @@ export default function AgencyRequestDetail() {
             </div>
             
             <div>
-              <Label htmlFor="description">{t("offerForm.description")}</Label>
+              <Label htmlFor="description">{t("common.description")}</Label>
               <Textarea
                 id="description"
-                placeholder={t("offerForm.descriptionPlaceholder")}
+                placeholder={t("common.descriptionPlaceholder")}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 required
@@ -517,7 +510,7 @@ export default function AgencyRequestDetail() {
             )}
             
             <div>
-              <Label>{t("offerForm.departureTime")}</Label>
+              <Label>{t("common.departureTime")}</Label>
               <div className="grid gap-2 mt-2">
                 <Popover>
                   <PopoverTrigger asChild>
@@ -530,7 +523,7 @@ export default function AgencyRequestDetail() {
                     >
                       <CalendarIcon className="mr-2 h-4 w-4" />
                       {departureTime ? (
-                        format(departureTime, "PPP")
+                        format(departureTime, "dd/MM/yyyy", {locale: fr})
                       ) : (
                         <span>{t("common.selectDate")}</span>
                       )}
@@ -542,6 +535,7 @@ export default function AgencyRequestDetail() {
                       selected={departureTime}
                       onSelect={setDepartureTime}
                       initialFocus
+                      locale={fr}
                     />
                   </PopoverContent>
                 </Popover>
@@ -565,7 +559,7 @@ export default function AgencyRequestDetail() {
             
             {returnDate && (
               <div>
-                <Label>{t("offerForm.returnTime")}</Label>
+                <Label>{t("common.returnTime")}</Label>
                 <div className="grid gap-2 mt-2">
                   <Popover>
                     <PopoverTrigger asChild>
@@ -578,7 +572,7 @@ export default function AgencyRequestDetail() {
                       >
                         <CalendarIcon className="mr-2 h-4 w-4" />
                         {returnTime ? (
-                          format(returnTime, "PPP")
+                          format(returnTime, "dd/MM/yyyy", {locale: fr})
                         ) : (
                           <span>{t("common.selectDate")}</span>
                         )}
@@ -590,6 +584,7 @@ export default function AgencyRequestDetail() {
                         selected={returnTime}
                         onSelect={setReturnTime}
                         initialFocus
+                        locale={fr}
                       />
                     </PopoverContent>
                   </Popover>
@@ -624,7 +619,7 @@ export default function AgencyRequestDetail() {
                 type="submit"
                 disabled={isSubmittingOffer}
               >
-                {isSubmittingOffer ? t("common.submitting") : t("offerForm.submit")}
+                {isSubmittingOffer ? t("common.submitting") : t("common.submit")}
               </Button>
             </DialogFooter>
           </form>
@@ -635,29 +630,19 @@ export default function AgencyRequestDetail() {
       <Dialog open={showUploadDialog} onOpenChange={setShowUploadDialog}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>{t("ticketUpload.title")}</DialogTitle>
+            <DialogTitle>{t("common.uploadTicket")}</DialogTitle>
             <DialogDescription>
-              {t("ticketUpload.description")}
+              {t("common.uploadTicketDescription")}
             </DialogDescription>
           </DialogHeader>
           
-          <form onSubmit={handleUploadTicket} className="space-y-4">
-            <div>
-              <Label htmlFor="ticketUrl">{t("ticketUpload.url")}</Label>
-              <p className="text-sm text-muted-foreground mb-2">
-                {t("ticketUpload.note")}
-              </p>
-              <Input
-                id="ticketUrl"
-                type="text"
-                placeholder="https://example.com/tickets/ticket-123.pdf"
-                value={ticketUrl}
-                onChange={(e) => setTicketUrl(e.target.value)}
-                required
-              />
-            </div>
+          <div className="space-y-4">
+            <PdfUploader
+              onUploadComplete={handleTicketUploadComplete}
+              isUploading={isUploadingTicket}
+            />
             
-            <DialogFooter className="gap-2 sm:gap-0">
+            <DialogFooter className="gap-2 sm:gap-0 mt-4">
               <Button
                 type="button"
                 variant="outline"
@@ -665,14 +650,8 @@ export default function AgencyRequestDetail() {
               >
                 {t("common.cancel")}
               </Button>
-              <Button
-                type="submit"
-                disabled={isUploadingTicket}
-              >
-                {isUploadingTicket ? t("ticketUpload.uploading") : t("ticketUpload.upload")}
-              </Button>
             </DialogFooter>
-          </form>
+          </div>
         </DialogContent>
       </Dialog>
     </MainLayout>
