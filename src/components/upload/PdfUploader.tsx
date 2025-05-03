@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { FilePdf, Upload } from "lucide-react";
+import { FileText, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "react-i18next";
 
@@ -93,7 +93,7 @@ const PdfUploader = ({ onFileUploaded, className }: PdfUploaderProps) => {
         <div className="flex flex-col items-center justify-center space-y-2">
           {fileName ? (
             <div className="flex items-center space-x-2">
-              <FilePdf className="h-8 w-8 text-red-500" />
+              <FileText className="h-8 w-8 text-red-500" />
               <span className="font-medium truncate max-w-[200px]">{fileName}</span>
             </div>
           ) : (

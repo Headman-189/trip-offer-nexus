@@ -1,4 +1,3 @@
-
 import React, { createContext, useState, useContext, useEffect } from "react";
 import { User, UserRole } from "@/types";
 import { mockUsers } from "@/lib/mock-data";
@@ -10,6 +9,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
   register: (name: string, email: string, password: string, role: UserRole) => Promise<void>;
+  updateUserProfile: (updatedUser: User) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -34,34 +34,34 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const login = async (email: string, password: string) => {
-  setIsLoading(true);
-  try {
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    const user = mockUsers.find(u => u.email === email);
-    if (!user) {
+    setIsLoading(true);
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      const user = mockUsers.find(u => u.email === email);
+      if (!user) {
+        toast({
+          title: "Login failed",
+          description: "Invalid email or password",
+          variant: "destructive",
+        });
+        throw new Error("Invalid credentials");
+      }
+
+      setCurrentUser(user);  // Met à jour currentUser
+      localStorage.setItem("user", JSON.stringify(user));  // Sauvegarde l'utilisateur
+
       toast({
-        title: "Login failed",
-        description: "Invalid email or password",
-        variant: "destructive",
+        title: "Login successful",
+        description: `Welcome back, ${user.name}!`,
       });
-      throw new Error("Invalid credentials");
+    } catch (error) {
+      console.error("Login error:", error);
+      throw error;
+    } finally {
+      setIsLoading(false);
     }
-
-    setCurrentUser(user);  // Met à jour currentUser
-    localStorage.setItem("user", JSON.stringify(user));  // Sauvegarde l'utilisateur
-
-    toast({
-      title: "Login successful",
-      description: `Welcome back, ${user.name}!`,
-    });
-  } catch (error) {
-    console.error("Login error:", error);
-    throw error;
-  } finally {
-    setIsLoading(false);
-  }
-};
+  };
 
   const register = async (name: string, email: string, password: string, role: UserRole) => {
     setIsLoading(true);
@@ -105,6 +105,34 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const updateUserProfile = async (updatedUser: User) => {
+    setIsLoading(true);
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      setCurrentUser(updatedUser);
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+      
+      toast({
+        title: "Profile updated",
+        description: "Your profile has been updated successfully",
+      });
+      
+      return Promise.resolve();
+    } catch (error) {
+      console.error("Profile update error:", error);
+      toast({
+        title: "Update failed",
+        description: "Failed to update your profile",
+        variant: "destructive",
+      });
+      return Promise.reject(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const logout = () => {
     setCurrentUser(null);
     localStorage.removeItem("user");
@@ -120,6 +148,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     login,
     logout,
     register,
+    updateUserProfile,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
