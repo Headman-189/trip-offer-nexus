@@ -11,13 +11,44 @@
     "cancel": "إلغاء",
     "submit": "إرسال",
     "createRequest": "إنشاء طلب جديد",
-    "viewAll": "عرض الكل"
+    "viewAll": "عرض الكل",
+    "subtitle": "ربط العملاء بعروض السفر المخصصة",
+    "signIn": "تسجيل الدخول",
+    "signingIn": "جاري تسجيل الدخول..."
   },
   "language": {
     "en": "الإنجليزية",
     "es": "الإسبانية",
     "fr": "الفرنسية",
     "ar": "العربية"
+  },
+  "login": {
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "enterCredentials": "أدخل بيانات الاعتماد للوصول إلى حسابك",
+    "forgotPassword": "نسيت كلمة المرور؟",
+    "noAccount": "ليس لديك حساب؟",
+    "createAccount": "إنشاء حساب",
+    "demoAccounts": "حسابات تجريبية",
+    "clientAccount": "حساب العميل",
+    "agencyAccount": "حساب الوكالة",
+    "error": "خطأ"
+  },
+  "preferences": {
+    "travelClass": "درجة السفر",
+    "economy": "اقتصادية",
+    "business": "رجال الأعمال",
+    "first": "الدرجة الأولى",
+    "priceComfort": "السعر والراحة",
+    "cheapest": "الخيار الأرخص",
+    "comfortable": "الخيار المريح",
+    "noStopover": "بدون توقف",
+    "longStopover": "توقف طويل",
+    "additionalServices": "خدمات إضافية",
+    "insurance": "تأمين",
+    "carRental": "تأجير سيارة",
+    "privateDriver": "سائق خاص",
+    "clientPreferences": "تفضيلات العميل"
   },
   "dashboard": {
     "activeRequests": "الطلبات النشطة",

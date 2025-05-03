@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from "react-i18next";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -15,14 +16,15 @@ export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useTranslation();
 
  const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
   
   if (!email || !password) {
     toast({
-      title: "Error",
-      description: "Please enter your email and password",
+      title: t("login.error"),
+      description: t("login.enterCredentials"),
       variant: "destructive",
     });
     return;
@@ -31,7 +33,7 @@ export default function Login() {
   setIsLoading(true);
   try {
     await login(email, password);
-    navigate("/");  // Redirection après connexion
+    navigate("/dashboard");  // Redirecting specifically to dashboard
   } catch (error) {
     console.error("Login error:", error);
   } finally {
@@ -41,8 +43,8 @@ export default function Login() {
 
   // Demo accounts for easy testing
   const demoAccounts = [
-    { email: "john@example.com", description: "Client account" },
-    { email: "contact@globaltravel.com", description: "Agency account" },
+    { email: "john@example.com", description: t("login.clientAccount") },
+    { email: "contact@globaltravel.com", description: t("login.agencyAccount") },
   ];
 
   // Handle demo login
@@ -53,7 +55,7 @@ export default function Login() {
     setIsLoading(true);
     try {
       await login(demoEmail, "demopassword");
-      navigate("/");
+      navigate("/dashboard"); // Redirecting specifically to dashboard
     } catch (error) {
       console.error("Demo login error:", error);
     } finally {
@@ -66,21 +68,21 @@ export default function Login() {
       <div className="w-full max-w-md px-4 py-8">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-brand-800">TripOfferNexus</h1>
-          <p className="text-gray-600 mt-2">Connecting clients with personalized travel offers</p>
+          <p className="text-gray-600 mt-2">{t("common.subtitle")}</p>
         </div>
         
         <Card className="shadow-lg animate-fade-in">
           <CardHeader>
-            <CardTitle className="text-2xl">Log in</CardTitle>
+            <CardTitle className="text-2xl">{t("common.login")}</CardTitle>
             <CardDescription>
-              Enter your credentials to access your account
+              {t("login.enterCredentials")}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit}>
               <div className="grid gap-4">
                 <div className="grid gap-2">
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email">{t("login.email")}</Label>
                   <Input
                     id="email"
                     type="email"
@@ -91,7 +93,7 @@ export default function Login() {
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="password">Password</Label>
+                  <Label htmlFor="password">{t("login.password")}</Label>
                   <Input
                     id="password"
                     type="password"
@@ -102,7 +104,7 @@ export default function Login() {
                   />
                 </div>
                 <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? "Signing in..." : "Sign In"}
+                  {isLoading ? t("common.signingIn") : t("common.signIn")}
                 </Button>
               </div>
             </form>
@@ -113,7 +115,7 @@ export default function Login() {
                   <span className="w-full border-t border-gray-200" />
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-white px-2 text-gray-500">Demo Accounts</span>
+                  <span className="bg-white px-2 text-gray-500">{t("login.demoAccounts")}</span>
                 </div>
               </div>
 
@@ -137,9 +139,9 @@ export default function Login() {
           </CardContent>
           <CardFooter className="border-t border-gray-100 flex flex-col items-start">
             <p className="text-sm text-gray-600 mt-2">
-              Don't have an account?{" "}
+              {t("login.noAccount")}{" "}
               <Link to="/register" className="text-brand-600 hover:underline">
-                Create an account
+                {t("login.createAccount")}
               </Link>
             </p>
           </CardFooter>

@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import {
   ArrowDown,
   ArrowUp,
-  Plane, // ✅ remplace Airplane
+  Plane,
   Briefcase,
   Ticket,
   Bed,
@@ -182,7 +182,7 @@ export const PreferenceSelector = ({ preferences, onChange }: PreferenceSelector
               preferences.privateDriver && "border-primary"
             )}
           >
-            <plane className="mb-2 h-6 w-6" />
+            <Plane className="mb-2 h-6 w-6" />
             <span className="text-center">{t("preferences.privateDriver")}</span>
           </Toggle>
         </div>

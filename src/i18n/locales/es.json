@@ -11,13 +11,44 @@
     "cancel": "Cancelar",
     "submit": "Enviar",
     "createRequest": "Crear nueva solicitud",
-    "viewAll": "Ver todo"
+    "viewAll": "Ver todo",
+    "subtitle": "Conectando clientes con ofertas de viaje personalizadas",
+    "signIn": "Iniciar sesión",
+    "signingIn": "Iniciando sesión..."
   },
   "language": {
     "en": "Inglés",
     "es": "Español",
     "fr": "Francés",
     "ar": "Árabe"
+  },
+  "login": {
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "enterCredentials": "Introduce tus credenciales para acceder a tu cuenta",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "noAccount": "¿No tienes una cuenta?",
+    "createAccount": "Crear una cuenta",
+    "demoAccounts": "Cuentas de demostración",
+    "clientAccount": "Cuenta de cliente",
+    "agencyAccount": "Cuenta de agencia",
+    "error": "Error"
+  },
+  "preferences": {
+    "travelClass": "Clase de viaje",
+    "economy": "Económica",
+    "business": "Negocios",
+    "first": "Primera clase",
+    "priceComfort": "Precio y comodidad",
+    "cheapest": "Opción más económica",
+    "comfortable": "Opción cómoda",
+    "noStopover": "Sin escalas",
+    "longStopover": "Escala larga",
+    "additionalServices": "Servicios adicionales",
+    "insurance": "Seguro",
+    "carRental": "Alquiler de coche",
+    "privateDriver": "Conductor privado",
+    "clientPreferences": "Preferencias del cliente"
   },
   "dashboard": {
     "activeRequests": "Solicitudes activas",

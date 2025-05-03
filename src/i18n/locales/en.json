@@ -11,13 +11,44 @@
     "cancel": "Cancel",
     "submit": "Submit",
     "createRequest": "Create new request",
-    "viewAll": "View all"
+    "viewAll": "View all",
+    "subtitle": "Connecting clients with personalized travel offers",
+    "signIn": "Sign In",
+    "signingIn": "Signing in..."
   },
   "language": {
     "en": "English",
     "es": "Spanish",
     "fr": "French",
     "ar": "Arabic"
+  },
+  "login": {
+    "email": "Email",
+    "password": "Password",
+    "enterCredentials": "Enter your credentials to access your account",
+    "forgotPassword": "Forgot password?",
+    "noAccount": "Don't have an account?",
+    "createAccount": "Create an account",
+    "demoAccounts": "Demo Accounts",
+    "clientAccount": "Client account",
+    "agencyAccount": "Agency account",
+    "error": "Error"
+  },
+  "preferences": {
+    "travelClass": "Travel Class",
+    "economy": "Economy",
+    "business": "Business",
+    "first": "First Class",
+    "priceComfort": "Price & Comfort",
+    "cheapest": "Cheapest Option",
+    "comfortable": "Comfortable Option",
+    "noStopover": "No Stopover",
+    "longStopover": "Long Stopover",
+    "additionalServices": "Additional Services",
+    "insurance": "Insurance",
+    "carRental": "Car Rental",
+    "privateDriver": "Private Driver",
+    "clientPreferences": "Client Preferences"
   },
   "dashboard": {
     "activeRequests": "Active Requests",
