@@ -7,7 +7,7 @@ const Index = () => {
   const { currentUser, isLoading } = useAuth();
   const { t } = useTranslation();
 
-  // If still loading, show a loading indicator
+  // Si chargement en cours, afficher un indicateur de chargement
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -17,12 +17,17 @@ const Index = () => {
     );
   }
 
-  // If logged in, redirect to dashboard
+  // Si connecté, rediriger vers le tableau de bord approprié selon le rôle
   if (currentUser) {
-    return <Navigate to="/dashboard" replace />;
+    // Rediriger vers la bonne page en fonction du rôle de l'utilisateur
+    if (currentUser.role === 'agency') {
+      return <Navigate to="/requests" replace />;
+    } else {
+      return <Navigate to="/my-requests" replace />;
+    }
   }
 
-  // Otherwise, redirect to the landing page
+  // Sinon, rediriger vers la page d'accueil
   return <Navigate to="/" replace />;
 };
 

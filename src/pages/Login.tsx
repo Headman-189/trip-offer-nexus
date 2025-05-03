@@ -33,7 +33,19 @@ export default function Login() {
   setIsLoading(true);
   try {
     await login(email, password);
-    navigate("/dashboard");  // Redirecting specifically to dashboard
+    // Rediriger en fonction du rôle
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      const user = JSON.parse(storedUser);
+      if (user.role === 'agency') {
+        navigate("/requests");
+      } else {
+        navigate("/my-requests");
+      }
+    } else {
+      // Si pour une raison quelconque l'utilisateur n'est pas dans le localStorage
+      navigate("/app");
+    }
   } catch (error) {
     console.error("Login error:", error);
   } finally {
@@ -41,21 +53,32 @@ export default function Login() {
   }
 };
 
-  // Demo accounts for easy testing
+  // Comptes de démonstration pour faciliter les tests
   const demoAccounts = [
     { email: "john@example.com", description: t("login.clientAccount") },
     { email: "contact@globaltravel.com", description: t("login.agencyAccount") },
   ];
 
-  // Handle demo login
+  // Gérer la connexion de démonstration
   const handleDemoLogin = async (demoEmail: string) => {
     setEmail(demoEmail);
-    setPassword("demopassword"); // In a real app, you would use a secure method
+    setPassword("demopassword"); // Dans une vraie application, vous utiliseriez une méthode sécurisée
     
     setIsLoading(true);
     try {
       await login(demoEmail, "demopassword");
-      navigate("/dashboard"); // Redirecting specifically to dashboard
+      // Rediriger en fonction du rôle
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        const user = JSON.parse(storedUser);
+        if (user.role === 'agency') {
+          navigate("/requests");
+        } else {
+          navigate("/my-requests");
+        }
+      } else {
+        navigate("/app");
+      }
     } catch (error) {
       console.error("Demo login error:", error);
     } finally {
@@ -67,7 +90,7 @@ export default function Login() {
     <div className="flex min-h-screen items-center justify-center bg-gray-100">
       <div className="w-full max-w-md px-4 py-8">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-brand-800">TripOfferNexus</h1>
+          <h1 className="text-3xl font-bold text-brand-800">TrippOff</h1>
           <p className="text-gray-600 mt-2">{t("common.subtitle")}</p>
         </div>
         

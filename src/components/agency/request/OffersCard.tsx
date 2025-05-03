@@ -29,6 +29,16 @@ export const OffersCard = ({
 }: OffersCardProps) => {
   const { t } = useTranslation();
 
+  // Convertir TravelPreferences en Record<string, boolean> si nécessaire
+  const requestPreferencesAsRecord = request.preferences ? 
+    Object.entries(request.preferences).reduce((acc, [key, value]) => {
+      if (typeof value === 'boolean') {
+        acc[key] = value;
+      }
+      return acc;
+    }, {} as Record<string, boolean>) : 
+    undefined;
+
   return (
     <Card className="mb-6">
       <CardHeader>
@@ -61,7 +71,7 @@ export const OffersCard = ({
               <OfferItem 
                 key={offer.id}
                 offer={offer}
-                requestPreferences={request.preferences}
+                requestPreferences={requestPreferencesAsRecord}
                 onUploadTicket={
                   offer.status === "accepted" && !offer.ticketUrl 
                     ? onUploadTicket 
