@@ -14,7 +14,31 @@
     "viewAll": "Ver todo",
     "subtitle": "Conectando clientes con ofertas de viaje personalizadas",
     "signIn": "Iniciar sesión",
-    "signingIn": "Iniciando sesión..."
+    "signingIn": "Iniciando sesión...",
+    "departureCity": "Ciudad de salida",
+    "departureCityPlaceholder": "Ingrese ciudad de salida",
+    "destinationCity": "Ciudad de destino",
+    "destinationCityPlaceholder": "Ingrese ciudad de destino",
+    "tripType": "Tipo de viaje",
+    "roundTrip": "Ida y vuelta",
+    "oneWay": "Solo ida",
+    "departureDate": "Fecha de salida",
+    "returnDate": "Fecha de regreso",
+    "selectDate": "Seleccione una fecha",
+    "transportType": "Tipo de transporte",
+    "flight": "Avión",
+    "rail": "Tren",
+    "additionalNotes": "Notas adicionales",
+    "additionalNotesPlaceholder": "Cualquier requisito o preferencia específica...",
+    "submitting": "Enviando...",
+    "submitRequest": "Enviar solicitud",
+    "wallet": "Cartera",
+    "walletBalance": "Saldo",
+    "history": "Historial de compras",
+    "profile": "Perfil de agencia",
+    "upload": "Subir",
+    "uploadTicket": "Subir billete",
+    "viewProfile": "Ver perfil"
   },
   "language": {
     "en": "Inglés",
@@ -48,7 +72,8 @@
     "insurance": "Seguro",
     "carRental": "Alquiler de coche",
     "privateDriver": "Conductor privado",
-    "clientPreferences": "Preferencias del cliente"
+    "clientPreferences": "Preferencias del cliente",
+    "title": "Preferencias de viaje"
   },
   "dashboard": {
     "activeRequests": "Solicitudes activas",
@@ -87,5 +112,59 @@
     "createAccount": "Crea una cuenta para recibir ofertas",
     "alreadyMember": "¿Ya tienes una cuenta?",
     "loginHere": "Inicia sesión aquí"
+  },
+  "createRequest": {
+    "title": "Crear solicitud de viaje",
+    "subtitle": "Completa los detalles de tu viaje para recibir ofertas de agencias",
+    "travelDetails": "Detalles del viaje",
+    "travelDetailsDescription": "Proporciona información sobre tu próximo viaje"
+  },
+  "agencyProfile": {
+    "title": "Perfil de Agencia",
+    "name": "Nombre de la agencia",
+    "address": "Dirección",
+    "cities": "Ciudades de operación",
+    "postalCode": "Código postal",
+    "iataCode": "Código IATA",
+    "phoneNumber": "Número de teléfono",
+    "landline": "Teléfono fijo",
+    "contactEmail": "Correo de contacto",
+    "claimEmail": "Correo para reclamaciones",
+    "bio": "Biografía",
+    "agencyImage": "Logo/Imagen de la agencia",
+    "foundedDate": "Fecha de fundación",
+    "specialty": "Especialidad",
+    "editProfile": "Editar perfil",
+    "saveProfile": "Guardar perfil"
+  },
+  "wallet": {
+    "title": "Tu cartera",
+    "balance": "Saldo actual",
+    "currency": "MAD",
+    "addFunds": "Añadir fondos",
+    "withdraw": "Retirar",
+    "transactions": "Historial de transacciones"
+  },
+  "history": {
+    "title": "Historial de compras",
+    "totalSpent": "Total gastado",
+    "totalTickets": "Total de billetes",
+    "acceptedOffers": "Ofertas aceptadas",
+    "date": "Fecha",
+    "trip": "Viaje",
+    "amount": "Importe",
+    "status": "Estado",
+    "viewTicket": "Ver billete",
+    "noHistory": "Aún no hay historial de compras"
+  },
+  "upload": {
+    "selectFile": "Seleccionar archivo PDF",
+    "drag": "Arrastra y suelta tu PDF aquí",
+    "or": "o",
+    "browse": "Explorar archivos",
+    "uploading": "Subiendo...",
+    "success": "¡Subida exitosa!",
+    "error": "Error al subir el archivo",
+    "onlyPdf": "Solo se permiten archivos PDF"
   }
 }

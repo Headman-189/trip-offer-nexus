@@ -14,7 +14,31 @@
     "viewAll": "View all",
     "subtitle": "Connecting clients with personalized travel offers",
     "signIn": "Sign In",
-    "signingIn": "Signing in..."
+    "signingIn": "Signing in...",
+    "departureCity": "Departure City",
+    "departureCityPlaceholder": "Enter city of departure",
+    "destinationCity": "Destination City",
+    "destinationCityPlaceholder": "Enter destination city",
+    "tripType": "Trip Type",
+    "roundTrip": "Round Trip",
+    "oneWay": "One Way",
+    "departureDate": "Departure Date",
+    "returnDate": "Return Date",
+    "selectDate": "Select a date",
+    "transportType": "Transport Type",
+    "flight": "Flight",
+    "rail": "Rail",
+    "additionalNotes": "Additional Notes",
+    "additionalNotesPlaceholder": "Any specific requirements or preferences...",
+    "submitting": "Submitting...",
+    "submitRequest": "Submit Request",
+    "wallet": "Wallet",
+    "walletBalance": "Balance",
+    "history": "Purchase History",
+    "profile": "Agency Profile",
+    "upload": "Upload",
+    "uploadTicket": "Upload Ticket",
+    "viewProfile": "View Profile"
   },
   "language": {
     "en": "English",
@@ -48,7 +72,8 @@
     "insurance": "Insurance",
     "carRental": "Car Rental",
     "privateDriver": "Private Driver",
-    "clientPreferences": "Client Preferences"
+    "clientPreferences": "Client Preferences",
+    "title": "Travel Preferences"
   },
   "dashboard": {
     "activeRequests": "Active Requests",
@@ -87,5 +112,59 @@
     "createAccount": "Create an account to receive offers",
     "alreadyMember": "Already have an account?",
     "loginHere": "Login here"
+  },
+  "createRequest": {
+    "title": "Create Travel Request",
+    "subtitle": "Fill in your travel details to receive offers from travel agencies",
+    "travelDetails": "Travel Details",
+    "travelDetailsDescription": "Provide information about your upcoming trip"
+  },
+  "agencyProfile": {
+    "title": "Agency Profile",
+    "name": "Agency Name",
+    "address": "Address",
+    "cities": "Operating Cities",
+    "postalCode": "Postal Code",
+    "iataCode": "IATA Code",
+    "phoneNumber": "Phone Number",
+    "landline": "Office Phone",
+    "contactEmail": "Contact Email",
+    "claimEmail": "Claims Email",
+    "bio": "Biography",
+    "agencyImage": "Agency Logo/Image",
+    "foundedDate": "Founded Date",
+    "specialty": "Specialty",
+    "editProfile": "Edit Profile",
+    "saveProfile": "Save Profile"
+  },
+  "wallet": {
+    "title": "Your Wallet",
+    "balance": "Current Balance",
+    "currency": "MAD",
+    "addFunds": "Add Funds",
+    "withdraw": "Withdraw",
+    "transactions": "Transaction History"
+  },
+  "history": {
+    "title": "Purchase History",
+    "totalSpent": "Total Spent",
+    "totalTickets": "Total Tickets",
+    "acceptedOffers": "Accepted Offers",
+    "date": "Date",
+    "trip": "Trip",
+    "amount": "Amount",
+    "status": "Status",
+    "viewTicket": "View Ticket",
+    "noHistory": "No purchase history yet"
+  },
+  "upload": {
+    "selectFile": "Select PDF file",
+    "drag": "Drag and drop your PDF here",
+    "or": "or",
+    "browse": "Browse files",
+    "uploading": "Uploading...",
+    "success": "Upload successful!",
+    "error": "Error uploading file",
+    "onlyPdf": "Only PDF files are allowed"
   }
 }

@@ -15,6 +15,8 @@ import RequestDetail from "./pages/RequestDetail";
 import AgencyRequests from "./pages/AgencyRequests";
 import AgencyRequestDetail from "./pages/AgencyRequestDetail";
 import AgencyOffers from "./pages/AgencyOffers";
+import AgencyProfile from "./pages/AgencyProfile";
+import ClientWallet from "./pages/ClientWallet";
 import NotFound from "./pages/NotFound";
 import Index from "./pages/Index";
 import Landing from "./pages/Landing";
@@ -47,11 +49,13 @@ const App = () => (
               <Route path="/my-requests" element={<ClientRequests />} />
               <Route path="/create-request" element={<CreateRequest />} />
               <Route path="/request/:id" element={<RequestDetail />} />
+              <Route path="/wallet" element={<ClientWallet />} />
               
               {/* Agency Routes */}
               <Route path="/requests" element={<AgencyRequests />} />
               <Route path="/agency/request/:id" element={<AgencyRequestDetail />} />
               <Route path="/my-offers" element={<AgencyOffers />} />
+              <Route path="/agency/profile" element={<AgencyProfile />} />
               
               {/* Catch-All Route */}
               <Route path="*" element={<NotFound />} />

@@ -7,6 +7,24 @@ export interface User {
   email: string;
   role: UserRole;
   createdAt: string;
+  walletBalance?: number;
+  agency?: AgencyProfile;
+}
+
+export interface AgencyProfile {
+  name: string;
+  address: string;
+  cities: string[];
+  postalCode: string;
+  iataCode?: string;
+  phoneNumber: string;
+  landline?: string;
+  contactEmail: string;
+  claimEmail?: string;
+  bio: string;
+  imageUrl?: string;
+  foundedDate?: string;
+  specialty?: string;
 }
 
 export type TransportType = 'rail' | 'flight';
@@ -64,6 +82,17 @@ export interface TravelOffer {
   status: 'pending' | 'accepted' | 'rejected' | 'expired' | 'completed';
   ticketUrl?: string;
   paymentReference?: string;
+  createdAt: string;
+}
+
+export interface Transaction {
+  id: string;
+  userId: string;
+  type: 'payment' | 'deposit' | 'withdrawal';
+  amount: number;
+  currency: string;
+  description: string;
+  relatedOfferId?: string;
   createdAt: string;
 }
 

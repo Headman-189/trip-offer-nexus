@@ -14,7 +14,31 @@
     "viewAll": "عرض الكل",
     "subtitle": "ربط العملاء بعروض السفر المخصصة",
     "signIn": "تسجيل الدخول",
-    "signingIn": "جاري تسجيل الدخول..."
+    "signingIn": "جاري تسجيل الدخول...",
+    "departureCity": "مدينة المغادرة",
+    "departureCityPlaceholder": "أدخل مدينة المغادرة",
+    "destinationCity": "مدينة الوجهة",
+    "destinationCityPlaceholder": "أدخل مدينة الوجهة",
+    "tripType": "نوع الرحلة",
+    "roundTrip": "ذهاب وعودة",
+    "oneWay": "ذهاب فقط",
+    "departureDate": "تاريخ المغادرة",
+    "returnDate": "تاريخ العودة",
+    "selectDate": "اختر تاريخًا",
+    "transportType": "نوع النقل",
+    "flight": "طيران",
+    "rail": "قطار",
+    "additionalNotes": "ملاحظات إضافية",
+    "additionalNotesPlaceholder": "أي متطلبات أو تفضيلات محددة...",
+    "submitting": "جارٍ الإرسال...",
+    "submitRequest": "إرسال الطلب",
+    "wallet": "المحفظة",
+    "walletBalance": "الرصيد",
+    "history": "سجل المشتريات",
+    "profile": "ملف الوكالة",
+    "upload": "رفع",
+    "uploadTicket": "رفع التذكرة",
+    "viewProfile": "عرض الملف الشخصي"
   },
   "language": {
     "en": "الإنجليزية",
@@ -48,7 +72,8 @@
     "insurance": "تأمين",
     "carRental": "تأجير سيارة",
     "privateDriver": "سائق خاص",
-    "clientPreferences": "تفضيلات العميل"
+    "clientPreferences": "تفضيلات العميل",
+    "title": "تفضيلات السفر"
   },
   "dashboard": {
     "activeRequests": "الطلبات النشطة",
@@ -87,5 +112,59 @@
     "createAccount": "أنشئ حسابًا لاستلام العروض",
     "alreadyMember": "هل لديك حساب بالفعل؟",
     "loginHere": "تسجيل الدخول هنا"
+  },
+  "createRequest": {
+    "title": "إنشاء طلب سفر",
+    "subtitle": "املأ تفاصيل سفرك لتلقي عروض من وكالات السفر",
+    "travelDetails": "تفاصيل السفر",
+    "travelDetailsDescription": "قدم معلومات عن رحلتك القادمة"
+  },
+  "agencyProfile": {
+    "title": "ملف الوكالة",
+    "name": "اسم الوكالة",
+    "address": "العنوان",
+    "cities": "المدن التي تعمل فيها",
+    "postalCode": "الرمز البريدي",
+    "iataCode": "رمز الإياتا",
+    "phoneNumber": "رقم الهاتف",
+    "landline": "الهاتف الثابت",
+    "contactEmail": "البريد الإلكتروني للتواصل",
+    "claimEmail": "البريد الإلكتروني للشكاوى",
+    "bio": "السيرة الذاتية",
+    "agencyImage": "شعار/صورة الوكالة",
+    "foundedDate": "تاريخ التأسيس",
+    "specialty": "التخصص",
+    "editProfile": "تعديل الملف",
+    "saveProfile": "حفظ الملف"
+  },
+  "wallet": {
+    "title": "محفظتك",
+    "balance": "الرصيد الحالي",
+    "currency": "درهم",
+    "addFunds": "إضافة أموال",
+    "withdraw": "سحب",
+    "transactions": "سجل المعاملات"
+  },
+  "history": {
+    "title": "سجل المشتريات",
+    "totalSpent": "إجمالي المنفق",
+    "totalTickets": "إجمالي التذاكر",
+    "acceptedOffers": "العروض المقبولة",
+    "date": "التاريخ",
+    "trip": "الرحلة",
+    "amount": "المبلغ",
+    "status": "الحالة",
+    "viewTicket": "عرض التذكرة",
+    "noHistory": "لا يوجد سجل مشتريات حتى الآن"
+  },
+  "upload": {
+    "selectFile": "اختر ملف PDF",
+    "drag": "اسحب وأفلت ملف PDF هنا",
+    "or": "أو",
+    "browse": "تصفح الملفات",
+    "uploading": "جارٍ الرفع...",
+    "success": "تم الرفع بنجاح!",
+    "error": "خطأ في رفع الملف",
+    "onlyPdf": "يُسمح فقط بملفات PDF"
   }
 }

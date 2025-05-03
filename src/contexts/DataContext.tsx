@@ -1,6 +1,6 @@
 
 import React, { createContext, useState, useContext, ReactNode } from "react";
-import { TravelRequest, TravelOffer, Notification, TravelPreferences, OfferPreferencesMatch } from "@/types";
+import { TravelRequest, TravelOffer, Notification, TravelPreferences, OfferPreferencesMatch, Transaction } from "@/types";
 import { mockTravelRequests, mockTravelOffers, mockNotifications } from "@/lib/mock-data";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "./AuthContext";
@@ -19,13 +19,18 @@ interface DataContextType {
   createTravelOffer: (offer: Omit<TravelOffer, "id" | "createdAt">) => Promise<void>;
   updateTravelOffer: (id: string, updates: Partial<TravelOffer>) => Promise<void>;
   acceptOffer: (offerId: string) => Promise<void>;
-  uploadTicket: (offerId: string, ticketUrl: string) => Promise<void>;
+  uploadTicket: (offerId: string, pdfFile: string) => Promise<void>;
   
   // Notifications
   notifications: Notification[];
   getUserNotifications: (userId: string) => Notification[];
   markNotificationAsRead: (id: string) => Promise<void>;
   createNotification: (notification: Omit<Notification, "id" | "createdAt" | "isRead">) => Promise<void>;
+  
+  // Transactions
+  transactions: Transaction[];
+  getUserTransactions: (userId: string) => Transaction[];
+  createTransaction: (transaction: Omit<Transaction, "id" | "createdAt">) => Promise<void>;
 }
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
@@ -34,8 +39,9 @@ export function DataProvider({ children }: { children: ReactNode }) {
   const [travelRequests, setTravelRequests] = useState<TravelRequest[]>(mockTravelRequests);
   const [travelOffers, setTravelOffers] = useState<TravelOffer[]>(mockTravelOffers);
   const [notifications, setNotifications] = useState<Notification[]>(mockNotifications);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
   const { toast } = useToast();
-  const { currentUser } = useAuth();
+  const { currentUser, updateUserProfile } = useAuth();
 
   // Travel Requests Functions
   const getUserRequests = (userId: string) => {
@@ -171,6 +177,23 @@ export function DataProvider({ children }: { children: ReactNode }) {
       return;
     }
     
+    // Check if this client already has an accepted offer for this request
+    const request = travelRequests.find(r => r.id === offer.requestId);
+    const existingAcceptedOffer = travelOffers.find(o => 
+      o.requestId === offer.requestId && 
+      o.status === "accepted" &&
+      o.id !== offerId
+    );
+    
+    if (existingAcceptedOffer) {
+      toast({
+        title: "Error",
+        description: "You have already accepted an offer for this request. You must pay for multiple acceptances.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     // Generate payment reference
     const paymentReference = `PAY-${Math.random().toString(36).substring(2, 10).toUpperCase()}`;
     
@@ -180,14 +203,28 @@ export function DataProvider({ children }: { children: ReactNode }) {
       paymentReference
     });
     
-    // Update all other offers for this request to rejected
-    const otherOffers = travelOffers.filter(o => o.requestId === offer.requestId && o.id !== offerId);
+    // Record the transaction
+    await createTransaction({
+      userId: request?.clientId || "",
+      type: "payment",
+      amount: offer.price,
+      currency: "MAD",
+      description: `Payment for offer ${offerId.substring(0, 8)}`,
+      relatedOfferId: offerId
+    });
+    
+    // Update all other offers for this request to rejected if not already accepted
+    const otherOffers = travelOffers.filter(o => 
+      o.requestId === offer.requestId && 
+      o.id !== offerId && 
+      o.status !== "accepted"
+    );
+    
     for (const otherOffer of otherOffers) {
       await updateTravelOffer(otherOffer.id, { status: "rejected" });
     }
     
     // Update the request status
-    const request = travelRequests.find(r => r.id === offer.requestId);
     if (request) {
       await updateTravelRequest(request.id, { status: "accepted" });
     }
@@ -215,7 +252,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
     });
   };
 
-  const uploadTicket = async (offerId: string, ticketUrl: string) => {
+  const uploadTicket = async (offerId: string, pdfFile: string) => {
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 500));
     
@@ -233,7 +270,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
     // Update the offer
     await updateTravelOffer(offerId, { 
       status: "completed",
-      ticketUrl
+      ticketUrl: pdfFile
     });
     
     // Update the request status
@@ -247,13 +284,13 @@ export function DataProvider({ children }: { children: ReactNode }) {
     createNotification({
       userId: request?.clientId || "",
       title: "Ticket Available",
-      message: `Your ticket for ${request?.departureCity || ""} to ${request?.destinationCity || ""} is now available for download.`,
+      message: `Your PDF ticket for ${request?.departureCity || ""} to ${request?.destinationCity || ""} is now available for download.`,
       type: "success",
     });
     
     toast({
       title: "Ticket Uploaded",
-      description: "The ticket has been successfully uploaded and is available to the client.",
+      description: "The PDF ticket has been successfully uploaded and is available to the client.",
     });
   };
 
@@ -286,6 +323,43 @@ export function DataProvider({ children }: { children: ReactNode }) {
     
     setNotifications(prev => [...prev, newNotification]);
   };
+  
+  // Transactions Functions
+  const getUserTransactions = (userId: string) => {
+    return transactions.filter(transaction => transaction.userId === userId);
+  };
+  
+  const createTransaction = async (transaction: Omit<Transaction, "id" | "createdAt">) => {
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 300));
+    
+    const newTransaction: Transaction = {
+      ...transaction,
+      id: `trans-${Date.now()}-${Math.random().toString(36).substring(2, 10)}`,
+      createdAt: new Date().toISOString(),
+    };
+    
+    setTransactions(prev => [...prev, newTransaction]);
+    
+    // Update user wallet balance if necessary
+    if (currentUser && currentUser.id === transaction.userId) {
+      const currentBalance = currentUser.walletBalance || 0;
+      let newBalance = currentBalance;
+      
+      if (transaction.type === "payment") {
+        newBalance -= transaction.amount;
+      } else if (transaction.type === "deposit") {
+        newBalance += transaction.amount;
+      } else if (transaction.type === "withdrawal") {
+        newBalance -= transaction.amount;
+      }
+      
+      await updateUserProfile({
+        ...currentUser,
+        walletBalance: newBalance
+      });
+    }
+  };
 
   const value = {
     travelRequests,
@@ -305,6 +379,10 @@ export function DataProvider({ children }: { children: ReactNode }) {
     getUserNotifications,
     markNotificationAsRead,
     createNotification,
+    
+    transactions,
+    getUserTransactions,
+    createTransaction,
   };
 
   return <DataContext.Provider value={value}>{children}</DataContext.Provider>;
