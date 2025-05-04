@@ -175,9 +175,9 @@ export default function Dashboard() {
                     1
                   </div>
                   <div>
-                    <h3 className="font-medium">Create a travel request</h3>
+                    <h3 className="font-medium">{t("common.createTravelRequest")}</h3>
                     <p className="text-muted-foreground">
-                      Submit your travel details including departure city, destination, dates, and whether you need rail or flight tickets.
+                      {t("common.submitTravelDetails")}
                     </p>
                   </div>
                 </div>
@@ -186,9 +186,9 @@ export default function Dashboard() {
                     2
                   </div>
                   <div>
-                    <h3 className="font-medium">Receive personalized offers</h3>
+                    <h3 className="font-medium">{t("common.receiveOffers")}</h3>
                     <p className="text-muted-foreground">
-                      Travel agencies will review your request and send you personalized offers with pricing and details.
+                      {t("common.agenciesReview")}
                     </p>
                   </div>
                 </div>
@@ -197,9 +197,9 @@ export default function Dashboard() {
                     3
                   </div>
                   <div>
-                    <h3 className="font-medium">Accept an offer and make payment</h3>
+                    <h3 className="font-medium">{t("common.acceptOffer")}</h3>
                     <p className="text-muted-foreground">
-                      Compare offers, choose the best one, and make a bank transfer using the provided reference code.
+                      {t("common.compareOffers")}
                     </p>
                   </div>
                 </div>
@@ -208,9 +208,9 @@ export default function Dashboard() {
                     4
                   </div>
                   <div>
-                    <h3 className="font-medium">Receive and download your tickets</h3>
+                    <h3 className="font-medium">{t("common.receiveTickets")}</h3>
                     <p className="text-muted-foreground">
-                      Once payment is confirmed, the travel agency will upload your tickets for you to download.
+                      {t("common.paymentConfirmed")}
                     </p>
                   </div>
                 </div>
@@ -218,7 +218,7 @@ export default function Dashboard() {
                   onClick={() => navigate("/create-request")}
                   className="mt-4 bg-gradient-to-r from-teal-500 to-brand-600 hover:from-teal-600 hover:to-brand-700"
                 >
-                  Create my first request
+                  {t("common.createFirstRequest")}
                 </Button>
               </div>
             ) : (
@@ -228,9 +228,9 @@ export default function Dashboard() {
                     1
                   </div>
                   <div>
-                    <h3 className="font-medium">Browse available travel requests</h3>
+                    <h3 className="font-medium">{t("common.browseRequests")}</h3>
                     <p className="text-muted-foreground">
-                      View client requests for rail or flight tickets and their specific requirements.
+                      {t("common.viewRequests")}
                     </p>
                   </div>
                 </div>
@@ -239,9 +239,9 @@ export default function Dashboard() {
                     2
                   </div>
                   <div>
-                    <h3 className="font-medium">Submit personalized offers</h3>
+                    <h3 className="font-medium">{t("common.submitOffers")}</h3>
                     <p className="text-muted-foreground">
-                      Create competitive offers with pricing and detailed travel information for clients.
+                      {t("common.createCompetitive")}
                     </p>
                   </div>
                 </div>
@@ -250,9 +250,9 @@ export default function Dashboard() {
                     3
                   </div>
                   <div>
-                    <h3 className="font-medium">Track accepted offers</h3>
+                    <h3 className="font-medium">{t("common.trackOffers")}</h3>
                     <p className="text-muted-foreground">
-                      Monitor which offers have been accepted and are awaiting payment confirmation.
+                      {t("common.monitorOffers")}
                     </p>
                   </div>
                 </div>
@@ -261,9 +261,9 @@ export default function Dashboard() {
                     4
                   </div>
                   <div>
-                    <h3 className="font-medium">Upload tickets for clients</h3>
+                    <h3 className="font-medium">{t("common.uploadTickets")}</h3>
                     <p className="text-muted-foreground">
-                      Once payment is confirmed, upload the PDF tickets for clients to download.
+                      {t("common.uploadPdf")}
                     </p>
                   </div>
                 </div>
@@ -271,7 +271,7 @@ export default function Dashboard() {
                   onClick={() => navigate("/requests")}
                   className="mt-4 bg-gradient-to-r from-teal-500 to-brand-600 hover:from-teal-600 hover:to-brand-700"
                 >
-                  View available requests
+                  {t("common.viewAvailableRequests")}
                 </Button>
               </div>
             )}

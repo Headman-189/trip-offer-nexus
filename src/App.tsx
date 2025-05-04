@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { HashRouter, Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { DataProvider } from "@/contexts/DataContext";
 import Dashboard from "./pages/Dashboard";
@@ -69,6 +69,9 @@ const App = () => (
               <Route path="/agency/request/:id" element={<AgencyRequestDetail />} />
               <Route path="/my-offers" element={<AgencyOffers />} />
               <Route path="/agency/profile" element={<AgencyProfile />} />
+              
+              {/* Redirects for easier navigation */}
+              <Route path="/" element={<Navigate to="/dashboard" replace />} />
               
               {/* Catch-All Route */}
               <Route path="*" element={<NotFound />} />

@@ -25,15 +25,10 @@ const Index = () => {
     );
   }
 
-  // Si connecté, rediriger vers le tableau de bord approprié selon le rôle
+  // Si connecté, rediriger vers le tableau de bord
   if (currentUser) {
-    console.log("Redirecting logged in user to appropriate dashboard");
-    // Rediriger vers la bonne page en fonction du rôle de l'utilisateur
-    if (currentUser.role === 'agency') {
-      return <Navigate to="/requests" replace />;
-    } else {
-      return <Navigate to="/my-requests" replace />;
-    }
+    console.log("Redirecting logged in user to dashboard");
+    return <Navigate to="/dashboard" replace />;
   }
 
   // Sinon, rediriger vers la page d'accueil

@@ -1,8 +1,9 @@
+
 import { useAuth } from "@/contexts/AuthContext";
 import { useData } from "@/contexts/DataContext";
 import { useToast } from "@/hooks/use-toast";
 import { NavLink, useNavigate } from "react-router-dom";
-import { Bell, LogOut, User } from "lucide-react";
+import { Bell, LogOut, User, Settings, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -11,6 +12,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useState, useEffect } from "react";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { useTranslation } from "react-i18next";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 export default function NavBar() {
   const { currentUser, logout } = useAuth();
@@ -20,6 +24,8 @@ export default function NavBar() {
   const [unreadCount, setUnreadCount] = useState(0);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [notifications, setNotifications] = useState<any[]>([]);
+  const { t } = useTranslation();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     if (currentUser) {
@@ -35,8 +41,8 @@ export default function NavBar() {
     logout();
     navigate("/login");
     toast({
-      title: "Logged out",
-      description: "You have been successfully logged out",
+      title: t("common.logout"),
+      description: t("common.logoutSuccess"),
     });
   };
 
@@ -58,22 +64,23 @@ export default function NavBar() {
   return (
     <nav className="bg-white border-b border-gray-200 py-4 px-6 flex justify-between items-center shadow-sm">
       <div className="flex items-center space-x-6">
-        <NavLink to="/" className="flex items-center">
+        <NavLink to="/dashboard" className="flex items-center">
           <span className="text-xl font-semibold text-brand-800">
             TripOfferNexus
           </span>
         </NavLink>
 
+        {/* Desktop Navigation */}
         {currentUser && (
           <div className="hidden md:flex items-center space-x-4">
             <NavLink
-              to="/"
+              to="/dashboard"
               className={({ isActive }) =>
                 isActive ? "nav-link active" : "nav-link"
               }
               end
             >
-              Dashboard
+              {t("common.dashboard")}
             </NavLink>
 
             {isClient && (
@@ -84,7 +91,7 @@ export default function NavBar() {
                     isActive ? "nav-link active" : "nav-link"
                   }
                 >
-                  My Requests
+                  {t("common.myRequests")}
                 </NavLink>
                 <NavLink
                   to="/create-request"
@@ -92,7 +99,15 @@ export default function NavBar() {
                     isActive ? "nav-link active" : "nav-link"
                   }
                 >
-                  New Request
+                  {t("common.createRequest")}
+                </NavLink>
+                <NavLink
+                  to="/wallet"
+                  className={({ isActive }) =>
+                    isActive ? "nav-link active" : "nav-link"
+                  }
+                >
+                  {t("common.wallet")}
                 </NavLink>
               </>
             )}
@@ -105,7 +120,7 @@ export default function NavBar() {
                     isActive ? "nav-link active" : "nav-link"
                   }
                 >
-                  Travel Requests
+                  {t("common.travelRequests")}
                 </NavLink>
                 <NavLink
                   to="/my-offers"
@@ -113,17 +128,117 @@ export default function NavBar() {
                     isActive ? "nav-link active" : "nav-link"
                   }
                 >
-                  My Offers
+                  {t("common.myOffers")}
                 </NavLink>
               </>
             )}
           </div>
         )}
+
+        {/* Mobile Menu Trigger */}
+        <div className="md:hidden">
+          <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="sm">
+                <Menu className="h-5 w-5" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left">
+              <div className="space-y-4 py-4">
+                <h2 className="text-xl font-semibold mb-4">{t("common.menu")}</h2>
+                <div className="space-y-2">
+                  <NavLink
+                    to="/dashboard"
+                    className="block py-2 px-3 rounded-md hover:bg-gray-100"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {t("common.dashboard")}
+                  </NavLink>
+                  
+                  {isClient && (
+                    <>
+                      <NavLink
+                        to="/my-requests"
+                        className="block py-2 px-3 rounded-md hover:bg-gray-100"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        {t("common.myRequests")}
+                      </NavLink>
+                      <NavLink
+                        to="/create-request"
+                        className="block py-2 px-3 rounded-md hover:bg-gray-100"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        {t("common.createRequest")}
+                      </NavLink>
+                      <NavLink
+                        to="/wallet"
+                        className="block py-2 px-3 rounded-md hover:bg-gray-100"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        {t("common.wallet")}
+                      </NavLink>
+                      <NavLink
+                        to="/profile"
+                        className="block py-2 px-3 rounded-md hover:bg-gray-100"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        {t("common.profile")}
+                      </NavLink>
+                    </>
+                  )}
+
+                  {isAgency && (
+                    <>
+                      <NavLink
+                        to="/requests"
+                        className="block py-2 px-3 rounded-md hover:bg-gray-100"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        {t("common.travelRequests")}
+                      </NavLink>
+                      <NavLink
+                        to="/my-offers"
+                        className="block py-2 px-3 rounded-md hover:bg-gray-100"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        {t("common.myOffers")}
+                      </NavLink>
+                      <NavLink
+                        to="/agency/profile"
+                        className="block py-2 px-3 rounded-md hover:bg-gray-100"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        {t("common.profile")}
+                      </NavLink>
+                    </>
+                  )}
+                  
+                  <div className="border-t border-gray-200 my-2 pt-2">
+                    <Button 
+                      variant="ghost" 
+                      className="w-full justify-start text-red-500" 
+                      onClick={() => {
+                        handleLogout();
+                        setIsMobileMenuOpen(false);
+                      }}
+                    >
+                      <LogOut className="h-4 w-4 mr-2" />
+                      {t("common.logout")}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </SheetContent>
+          </Sheet>
+        </div>
       </div>
 
       <div className="flex items-center space-x-4">
         {currentUser && (
           <>
+            <LanguageSwitcher />
+            
             <DropdownMenu
               open={isDropdownOpen}
               onOpenChange={setIsDropdownOpen}
@@ -148,12 +263,12 @@ export default function NavBar() {
                 className="w-80 max-h-96 overflow-auto"
               >
                 <div className="py-2 px-3 font-medium text-sm">
-                  Notifications
+                  {t("common.notifications")}
                 </div>
                 <div className="border-t border-gray-200">
                   {notifications.length === 0 ? (
                     <div className="py-4 px-3 text-sm text-gray-500 text-center">
-                      No notifications
+                      {t("common.noNotifications")}
                     </div>
                   ) : (
                     notifications
@@ -182,7 +297,7 @@ export default function NavBar() {
                             <div className="text-xs text-gray-400 mt-1">
                               {new Date(
                                 notification.createdAt
-                              ).toLocaleDateString("en-US", {
+                              ).toLocaleDateString("fr-FR", {
                                 month: "short",
                                 day: "numeric",
                                 hour: "2-digit",
@@ -214,7 +329,7 @@ export default function NavBar() {
               <DropdownMenuContent align="end">
                 <DropdownMenuItem disabled>
                   <span className="text-sm text-muted-foreground">
-                    Signed in as{" "}
+                    {t("common.signedInAs")}
                   </span>
                 </DropdownMenuItem>
                 <DropdownMenuItem disabled>
@@ -222,12 +337,18 @@ export default function NavBar() {
                     {currentUser.email}
                   </span>
                 </DropdownMenuItem>
+                
+                <DropdownMenuItem onClick={() => navigate(isClient ? "/profile" : "/agency/profile")}>
+                  <Settings className="h-4 w-4 mr-2" />
+                  {t("common.profile")}
+                </DropdownMenuItem>
+                
                 <DropdownMenuItem
                   className="text-red-500 focus:text-red-500 cursor-pointer"
                   onClick={handleLogout}
                 >
                   <LogOut className="h-4 w-4 mr-2" />
-                  Sign out
+                  {t("common.logout")}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

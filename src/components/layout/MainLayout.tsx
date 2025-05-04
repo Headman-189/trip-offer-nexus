@@ -3,6 +3,7 @@ import { ReactNode } from "react";
 import NavBar from "./NavBar";
 import { useAuth } from "@/contexts/AuthContext";
 import { Navigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 interface MainLayoutProps {
   children: ReactNode;
@@ -10,6 +11,7 @@ interface MainLayoutProps {
 
 export default function MainLayout({ children }: MainLayoutProps) {
   const { currentUser, isLoading } = useAuth();
+  const { t } = useTranslation();
 
   // If still loading, show nothing
   if (isLoading) {
@@ -33,7 +35,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
       </main>
       <footer className="bg-white border-t border-gray-200 py-4">
         <div className="container mx-auto px-4 text-center text-sm text-gray-500">
-          &copy; {new Date().getFullYear()} TripOfferNexus. All rights reserved.
+          &copy; {new Date().getFullYear()} TripOfferNexus. {t("common.allRightsReserved")}
         </div>
       </footer>
     </div>
