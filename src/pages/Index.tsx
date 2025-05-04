@@ -2,10 +2,18 @@
 import { Navigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTranslation } from "react-i18next";
+import { useEffect } from "react";
 
 const Index = () => {
   const { currentUser, isLoading } = useAuth();
   const { t } = useTranslation();
+
+  // Add debug logging
+  useEffect(() => {
+    console.log("Index component rendered");
+    console.log("Current user:", currentUser);
+    console.log("Is loading:", isLoading);
+  }, [currentUser, isLoading]);
 
   // Si chargement en cours, afficher un indicateur de chargement
   if (isLoading) {
@@ -19,6 +27,7 @@ const Index = () => {
 
   // Si connecté, rediriger vers le tableau de bord approprié selon le rôle
   if (currentUser) {
+    console.log("Redirecting logged in user to appropriate dashboard");
     // Rediriger vers la bonne page en fonction du rôle de l'utilisateur
     if (currentUser.role === 'agency') {
       return <Navigate to="/requests" replace />;
@@ -28,6 +37,7 @@ const Index = () => {
   }
 
   // Sinon, rediriger vers la page d'accueil
+  console.log("User not logged in, redirecting to landing page");
   return <Navigate to="/" replace />;
 };
 

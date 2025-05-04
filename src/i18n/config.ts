@@ -19,17 +19,22 @@ i18n
     resources,
     lng: 'fr', // Force French language
     fallbackLng: 'fr',
-    debug: false,
+    debug: process.env.NODE_ENV === 'development',
     interpolation: {
       escapeValue: false,
     },
     detection: {
       order: ['localStorage', 'navigator'],
       caches: ['localStorage'],
+      lookupLocalStorage: 'i18nextLng',
     },
     react: {
       useSuspense: false,
     },
   });
+
+// Force French language on init
+document.documentElement.lang = 'fr';
+localStorage.setItem('i18nextLng', 'fr');
 
 export default i18n;

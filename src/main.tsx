@@ -10,6 +10,7 @@ document.documentElement.lang = 'fr';
 
 // Log initialization for debugging
 console.log("Application initializing...");
+console.log("Language set to:", i18n.language);
 
 // Format de date français
 if (Intl && Intl.DateTimeFormat) {
