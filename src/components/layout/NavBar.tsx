@@ -1,4 +1,3 @@
-
 import { useAuth } from "@/contexts/AuthContext";
 import { useData } from "@/contexts/DataContext";
 import { useToast } from "@/hooks/use-toast";
@@ -20,9 +19,7 @@ export default function NavBar() {
   const navigate = useNavigate();
   const [unreadCount, setUnreadCount] = useState(0);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [notifications, setNotifications] = useState(
-    currentUser ? getUserNotifications(currentUser.id) : []
-  );
+  const [notifications, setNotifications] = useState<any[]>([]);
 
   useEffect(() => {
     if (currentUser) {

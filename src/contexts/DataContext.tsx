@@ -298,7 +298,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
 
   // Notifications Functions
   const getUserNotifications = (userId?: string) => {
-    const { currentUser } = useAuth();
+    // Ne pas appeler useAuth() ici car c'est une fonction normale, pas un composant ou un hook
     const targetUserId = userId || currentUser?.id;
     
     if (!targetUserId) return [];
