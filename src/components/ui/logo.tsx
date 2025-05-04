@@ -46,7 +46,7 @@ export function Logo({ className = "", size = 'medium' }: LogoProps) {
         </svg>
       </div>
       <span className={`font-bold text-gradient bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-teal-400 ${size === 'small' ? 'text-xl' : size === 'medium' ? 'text-2xl' : 'text-3xl'}`}>
-        TrippOff
+        TripOff
       </span>
     </div>
   );

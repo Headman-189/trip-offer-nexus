@@ -42,18 +42,18 @@ export const OffersCard = ({
   return (
     <Card className="mb-6">
       <CardHeader>
-        <CardTitle>{t("common.myOffers")}</CardTitle>
+        <CardTitle>Mes offres</CardTitle>
         <CardDescription>
-          {t("common.myOffersDescription")}
+          Offres que vous avez faites pour cette demande
         </CardDescription>
       </CardHeader>
       <CardContent>
         {myOffers.length === 0 ? (
           <div className="text-center py-8">
             <FileText className="h-12 w-12 mx-auto text-muted-foreground opacity-50" />
-            <h3 className="mt-4 text-lg font-medium">{t("common.noOffers")}</h3>
+            <h3 className="mt-4 text-lg font-medium">Aucune offre</h3>
             <p className="text-muted-foreground mt-2 max-w-sm mx-auto">
-              {t("common.noOffersDescription")}
+              Vous n'avez pas encore fait d'offre pour cette demande de voyage
             </p>
             
             {canMakeOffer && (
@@ -61,7 +61,7 @@ export const OffersCard = ({
                 className="mt-4"
                 onClick={onCreateOffer}
               >
-                {t("common.createOffer")}
+                Créer une offre
               </Button>
             )}
           </div>

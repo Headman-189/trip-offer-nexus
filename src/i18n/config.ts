@@ -37,6 +37,11 @@ i18n
     react: {
       useSuspense: false,
     },
+    parseMissingKeyHandler: (key) => {
+      // Au lieu d'afficher la clé, retourner une version "humanisée"
+      const readableKey = key.split('.').pop() || key;
+      return readableKey.charAt(0).toUpperCase() + readableKey.slice(1).replace(/([A-Z])/g, ' $1');
+    }
   });
 
 // Set initial language on document

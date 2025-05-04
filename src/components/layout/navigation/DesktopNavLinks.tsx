@@ -19,7 +19,7 @@ export default function DesktopNavLinks({ isClient, isAgency }: DesktopNavLinksP
         }
         end
       >
-        {t("common.dashboard")}
+        Tableau de bord
       </NavLink>
 
       {isClient && (
@@ -30,7 +30,7 @@ export default function DesktopNavLinks({ isClient, isAgency }: DesktopNavLinksP
               isActive ? "nav-link active" : "nav-link"
             }
           >
-            {t("common.myRequests")}
+            Mes demandes
           </NavLink>
           <NavLink
             to="/create-request"
@@ -38,7 +38,7 @@ export default function DesktopNavLinks({ isClient, isAgency }: DesktopNavLinksP
               isActive ? "nav-link active" : "nav-link"
             }
           >
-            {t("common.createRequest")}
+            Nouvelle demande
           </NavLink>
           <NavLink
             to="/wallet"
@@ -46,7 +46,7 @@ export default function DesktopNavLinks({ isClient, isAgency }: DesktopNavLinksP
               isActive ? "nav-link active" : "nav-link"
             }
           >
-            {t("common.wallet")}
+            Portefeuille
           </NavLink>
         </>
       )}
@@ -59,7 +59,7 @@ export default function DesktopNavLinks({ isClient, isAgency }: DesktopNavLinksP
               isActive ? "nav-link active" : "nav-link"
             }
           >
-            {t("common.travelRequests")}
+            Demandes de voyage
           </NavLink>
           <NavLink
             to="/my-offers"
@@ -67,7 +67,7 @@ export default function DesktopNavLinks({ isClient, isAgency }: DesktopNavLinksP
               isActive ? "nav-link active" : "nav-link"
             }
           >
-            {t("common.myOffers")}
+            Mes offres
           </NavLink>
         </>
       )}
