@@ -16,6 +16,9 @@ import AgencyRequests from "./pages/AgencyRequests";
 import AgencyRequestDetail from "./pages/AgencyRequestDetail";
 import AgencyOffers from "./pages/AgencyOffers";
 import AgencyProfile from "./pages/AgencyProfile";
+import AgencyExplorer from "./pages/AgencyExplorer";
+import AgencyPublicProfile from "./pages/AgencyPublicProfile";
+import Messages from "./pages/Messages";
 import ClientWallet from "./pages/ClientWallet";
 import NotFound from "./pages/NotFound";
 import Index from "./pages/Index";
@@ -63,6 +66,9 @@ const App = () => (
               <Route path="/wallet" element={<ClientWallet />} />
               <Route path="/profile" element={<ClientProfile />} />
               <Route path="/notification/:id" element={<Notification />} />
+              <Route path="/agencies" element={<AgencyExplorer />} />
+              <Route path="/agency/:id" element={<AgencyPublicProfile />} />
+              <Route path="/messages" element={<Messages />} />
               
               {/* Agency Routes */}
               <Route path="/requests" element={<AgencyRequests />} />

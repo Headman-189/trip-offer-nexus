@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, ReactNode } from "react";
-import { TravelRequest, TravelOffer, Notification, TravelPreferences, OfferPreferencesMatch, Transaction } from "@/types";
+import { TravelRequest, TravelOffer, Notification, TravelPreferences, OfferPreferencesMatch, Transaction, Message, Conversation, AgencyProfile, User } from "@/types";
 import { mockTravelRequests, mockTravelOffers, mockNotifications } from "@/lib/mock-data";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "./AuthContext";
@@ -30,6 +30,17 @@ interface DataContextType {
   transactions: Transaction[];
   getUserTransactions: (userId: string) => Transaction[];
   createTransaction: (transaction: Omit<Transaction, "id" | "createdAt">) => Promise<void>;
+
+  // Messaging
+  getUserConversations: (userId: string) => Promise<Conversation[]>;
+  getConversationMessages: (conversationId: string) => Promise<Message[]>;
+  sendMessage: (params: { conversationId: string, senderId: string, recipientId: string, content: string }) => Promise<void>;
+  markMessagesAsRead: (conversationId: string, userId: string) => Promise<void>;
+  startConversation: (userId1: string, userId2: string) => Promise<string>;
+  
+  // Agencies
+  getAllAgencies: () => Promise<(User & { agency: AgencyProfile })[]>;
+  getAgencyById: (agencyId: string) => Promise<(User & { agency: AgencyProfile }) | null>;
 }
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
@@ -42,8 +53,10 @@ export function DataProvider({ children }: { children: ReactNode }) {
     // Add more mock notifications if needed
   ]);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [conversations, setConversations] = useState<Conversation[]>([]);
   const { toast } = useToast();
-  const { currentUser, updateUserProfile } = useAuth();
+  const { currentUser, updateUserProfile, getAllUsers } = useAuth();
 
   // Travel Requests Functions
   const getUserRequests = (userId: string) => {
@@ -64,23 +77,23 @@ export function DataProvider({ children }: { children: ReactNode }) {
     setTravelRequests(prev => [...prev, newRequest]);
     
     toast({
-      title: "Request Created",
-      description: "Your travel request has been submitted successfully.",
+      title: "Demande créée",
+      description: "Votre demande de voyage a été soumise avec succès.",
     });
 
     // Create notification for agencies
     if (currentUser) {
       createNotification({
         userId: "agency-1", // In a real app, you'd notify all agencies
-        title: "New Travel Request",
-        message: `New ${newRequest.transportType} request from ${newRequest.departureCity} to ${newRequest.destinationCity}`,
+        title: "Nouvelle demande de voyage",
+        message: `Nouvelle demande de ${newRequest.transportType} de ${newRequest.departureCity} à ${newRequest.destinationCity}`,
         type: "info",
       });
       
       createNotification({
         userId: "agency-2",
-        title: "New Travel Request",
-        message: `New ${newRequest.transportType} request from ${newRequest.departureCity} to ${newRequest.destinationCity}`,
+        title: "Nouvelle demande de voyage",
+        message: `Nouvelle demande de ${newRequest.transportType} de ${newRequest.departureCity} à ${newRequest.destinationCity}`,
         type: "info",
       });
     }
@@ -97,8 +110,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
     );
     
     toast({
-      title: "Request Updated",
-      description: "Your travel request has been updated successfully.",
+      title: "Demande mise à jour",
+      description: "Votre demande de voyage a été mise à jour avec succès.",
     });
   };
 
@@ -124,8 +137,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
     setTravelOffers(prev => [...prev, newOffer]);
     
     toast({
-      title: "Offer Created",
-      description: "Your travel offer has been submitted successfully.",
+      title: "Offre créée",
+      description: "Votre offre de voyage a été soumise avec succès.",
     });
 
     // Find the request to get the client ID
@@ -134,9 +147,9 @@ export function DataProvider({ children }: { children: ReactNode }) {
       // Create notification for the client
       createNotification({
         userId: request.clientId,
-        title: "New Travel Offer",
-        message: `You've received a new offer from ${offer.agencyName} for your trip to ${
-          travelRequests.find(r => r.id === offer.requestId)?.destinationCity || "your destination"
+        title: "Nouvelle offre de voyage",
+        message: `Nouvelle offre de ${offer.agencyName} pour votre voyage de ${
+          travelRequests.find(r => r.id === offer.requestId)?.destinationCity || "votre destination"
         }.`,
         type: "info",
       });
@@ -159,8 +172,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
     );
     
     toast({
-      title: "Offer Updated",
-      description: "The travel offer has been updated successfully.",
+      title: "Offre mise à jour",
+      description: "L'offre de voyage a été mise à jour avec succès.",
     });
   };
 
@@ -172,8 +185,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
     const offer = travelOffers.find(o => o.id === offerId);
     if (!offer) {
       toast({
-        title: "Error",
-        description: "Offer not found.",
+        title: "Erreur",
+        description: "L'offre n'a pas été trouvée.",
         variant: "destructive",
       });
       return;
@@ -189,8 +202,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
     
     if (existingAcceptedOffer) {
       toast({
-        title: "Error",
-        description: "You have already accepted an offer for this request. You must pay for multiple acceptances.",
+        title: "Erreur",
+        description: "Vous avez déjà accepté une offre pour cette demande. Vous devez payer pour plusieurs acceptances.",
         variant: "destructive",
       });
       return;
@@ -211,7 +224,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
       type: "payment",
       amount: offer.price,
       currency: "MAD",
-      description: `Payment for offer ${offerId.substring(0, 8)}`,
+      description: `Paiement pour l'offre ${offerId.substring(0, 8)}`,
       relatedOfferId: offerId
     });
     
@@ -235,22 +248,22 @@ export function DataProvider({ children }: { children: ReactNode }) {
     // For the client
     createNotification({
       userId: request?.clientId || "",
-      title: "Offer Accepted",
-      message: `You've accepted an offer from ${offer.agencyName}. Your payment reference is ${paymentReference}.`,
+      title: "Offre acceptée",
+      message: `Vous avez accepté une offre de ${offer.agencyName}. Votre référence de paiement est ${paymentReference}.`,
       type: "success",
     });
     
     // For the agency
     createNotification({
       userId: offer.agencyId,
-      title: "Offer Accepted",
-      message: `Your offer for ${request?.departureCity || ""} to ${request?.destinationCity || ""} has been accepted. Please prepare the tickets once payment is confirmed.`,
+      title: "Offre acceptée",
+      message: `Votre offre pour ${request?.departureCity || ""} à ${request?.destinationCity || ""} a été acceptée. Veuillez préparer les billets une fois que le paiement sera confirmé.`,
       type: "success",
     });
     
     toast({
-      title: "Offer Accepted",
-      description: `You've accepted the offer. Your payment reference is ${paymentReference}. Please use this reference when making your bank transfer.`,
+      title: "Offre acceptée",
+      description: `Vous avez accepté l'offre. Votre référence de paiement est ${paymentReference}. Veuillez utiliser cette référence lors de votre transfert bancaire.`,
     });
   };
 
@@ -262,8 +275,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
     const offer = travelOffers.find(o => o.id === offerId);
     if (!offer) {
       toast({
-        title: "Error",
-        description: "Offer not found.",
+        title: "Erreur",
+        description: "L'offre n'a pas été trouvée.",
         variant: "destructive",
       });
       return;
@@ -285,14 +298,14 @@ export function DataProvider({ children }: { children: ReactNode }) {
     // For the client
     createNotification({
       userId: request?.clientId || "",
-      title: "Ticket Available",
-      message: `Your PDF ticket for ${request?.departureCity || ""} to ${request?.destinationCity || ""} is now available for download.`,
+      title: "Ticket disponible",
+      message: `Votre PDF de billet pour ${request?.departureCity || ""} à ${request?.destinationCity || ""} est maintenant disponible pour téléchargement.`,
       type: "success",
     });
     
     toast({
-      title: "Ticket Uploaded",
-      description: "The PDF ticket has been successfully uploaded and is available to the client.",
+      title: "Ticket téléchargé",
+      description: "Le PDF de billet a été téléchargé avec succès et est disponible pour le client.",
     });
   };
 
@@ -372,6 +385,185 @@ export function DataProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  // Messaging Functions
+  const getUserConversations = async (userId: string): Promise<Conversation[]> => {
+    // Simulate API call delay
+    await new Promise(resolve => setTimeout(resolve, 300));
+    
+    // Get user conversations where the user is a participant
+    const userConversations = conversations.filter(conv => 
+      conv.participantIds.includes(userId)
+    );
+    
+    // Enrichir les conversations avec les noms des participants
+    const enrichedConversations = await Promise.all(userConversations.map(async (conv) => {
+      const users = await getAllUsers();
+      
+      const participantNames = conv.participantIds.map(id => {
+        const user = users.find(u => u.id === id);
+        return user ? user.name : "Utilisateur inconnu";
+      });
+      
+      return {
+        ...conv,
+        participantNames
+      };
+    }));
+    
+    // Sort by most recent activity
+    return enrichedConversations.sort((a, b) => {
+      const dateA = a.updatedAt ? new Date(a.updatedAt) : new Date(0);
+      const dateB = b.updatedAt ? new Date(b.updatedAt) : new Date(0);
+      return dateB.getTime() - dateA.getTime();
+    });
+  };
+  
+  const getConversationMessages = async (conversationId: string): Promise<Message[]> => {
+    // Simulate API call delay
+    await new Promise(resolve => setTimeout(resolve, 300));
+    
+    // Get messages for the conversation
+    const conversationMessages = messages.filter(msg => 
+      msg.conversationId === conversationId
+    );
+    
+    // Sort by creation time
+    return conversationMessages.sort((a, b) => {
+      const dateA = new Date(a.createdAt);
+      const dateB = new Date(b.createdAt);
+      return dateA.getTime() - dateB.getTime();
+    });
+  };
+  
+  const sendMessage = async (params: { 
+    conversationId: string, 
+    senderId: string, 
+    recipientId: string, 
+    content: string 
+  }): Promise<void> => {
+    // Simulate API call delay
+    await new Promise(resolve => setTimeout(resolve, 300));
+    
+    const { conversationId, senderId, recipientId, content } = params;
+    
+    // Create new message
+    const newMessage: Message = {
+      id: `msg-${Date.now()}-${Math.random().toString(36).substring(2, 10)}`,
+      conversationId,
+      senderId,
+      recipientId,
+      content,
+      status: "sent",
+      createdAt: new Date().toISOString(),
+    };
+    
+    // Add message to state
+    setMessages(prev => [...prev, newMessage]);
+    
+    // Update conversation with latest message info
+    setConversations(prev => 
+      prev.map(conv => {
+        if (conv.id === conversationId) {
+          return {
+            ...conv,
+            lastMessageId: newMessage.id,
+            lastMessageContent: content,
+            lastMessageTime: newMessage.createdAt,
+            unreadCount: conv.participantIds.includes(recipientId) ? conv.unreadCount + 1 : conv.unreadCount,
+            updatedAt: newMessage.createdAt
+          };
+        }
+        return conv;
+      })
+    );
+  };
+  
+  const markMessagesAsRead = async (conversationId: string, userId: string): Promise<void> => {
+    // Simulate API call delay
+    await new Promise(resolve => setTimeout(resolve, 300));
+    
+    // Mark all messages as read where the user is the recipient
+    setMessages(prev => 
+      prev.map(msg => {
+        if (msg.conversationId === conversationId && msg.recipientId === userId && msg.status !== "read") {
+          return {
+            ...msg,
+            status: "read",
+            readAt: new Date().toISOString()
+          };
+        }
+        return msg;
+      })
+    );
+    
+    // Update conversation unread count
+    setConversations(prev => 
+      prev.map(conv => {
+        if (conv.id === conversationId) {
+          return {
+            ...conv,
+            unreadCount: 0
+          };
+        }
+        return conv;
+      })
+    );
+  };
+  
+  const startConversation = async (userId1: string, userId2: string): Promise<string> => {
+    // Simulate API call delay
+    await new Promise(resolve => setTimeout(resolve, 300));
+    
+    // Check if conversation already exists
+    const existingConversation = conversations.find(conv => 
+      conv.participantIds.includes(userId1) && conv.participantIds.includes(userId2) && conv.participantIds.length === 2
+    );
+    
+    if (existingConversation) {
+      return existingConversation.id;
+    }
+    
+    // Create new conversation
+    const newConversation: Conversation = {
+      id: `conv-${Date.now()}-${Math.random().toString(36).substring(2, 10)}`,
+      participantIds: [userId1, userId2],
+      unreadCount: 0,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+    
+    // Add conversation to state
+    setConversations(prev => [...prev, newConversation]);
+    
+    return newConversation.id;
+  };
+
+  // Agency Functions
+  const getAllAgencies = async (): Promise<(User & { agency: AgencyProfile })[]> => {
+    // Simulate API call delay
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    const allUsers = await getAllUsers();
+    
+    return allUsers
+      .filter(user => user.role === "agency" && user.agency)
+      .map(user => user as User & { agency: AgencyProfile });
+  };
+  
+  const getAgencyById = async (agencyId: string): Promise<(User & { agency: AgencyProfile }) | null> => {
+    // Simulate API call delay
+    await new Promise(resolve => setTimeout(resolve, 300));
+    
+    const allUsers = await getAllUsers();
+    const agency = allUsers.find(user => user.id === agencyId && user.role === "agency");
+    
+    if (!agency || !agency.agency) {
+      return null;
+    }
+    
+    return agency as User & { agency: AgencyProfile };
+  };
+
   const value = {
     travelRequests,
     getUserRequests,
@@ -394,6 +586,15 @@ export function DataProvider({ children }: { children: ReactNode }) {
     transactions,
     getUserTransactions,
     createTransaction,
+    
+    getUserConversations,
+    getConversationMessages,
+    sendMessage,
+    markMessagesAsRead,
+    startConversation,
+    
+    getAllAgencies,
+    getAgencyById,
   };
 
   return <DataContext.Provider value={value}>{children}</DataContext.Provider>;

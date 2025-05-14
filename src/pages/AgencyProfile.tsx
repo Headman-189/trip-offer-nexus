@@ -8,12 +8,10 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Building, MapPin } from "lucide-react";
+import { Building, MapPin, X } from "lucide-react";
 import { AgencyProfile as AgencyProfileType } from "@/types";
-import { useTranslation } from "react-i18next";
 
 export default function AgencyProfile() {
-  const { t } = useTranslation();
   const { currentUser, updateUserProfile } = useAuth();
   const { toast } = useToast();
   const [isEditing, setIsEditing] = useState(false);
@@ -30,11 +28,13 @@ export default function AgencyProfile() {
     claimEmail: "",
     bio: "",
     specialty: "",
-    foundedDate: ""
+    foundedDate: "",
+    markets: []
   };
   
   const [profile, setProfile] = useState<AgencyProfileType>(initialProfile);
   const [citiesInput, setCitiesInput] = useState(initialProfile.cities.join(", "));
+  const [marketsInput, setMarketsInput] = useState(initialProfile.markets?.join(", ") || "");
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -51,9 +51,16 @@ export default function AgencyProfile() {
       .map(city => city.trim())
       .filter(city => city.length > 0);
     
+    // Parse markets from comma-separated string
+    const parsedMarkets = marketsInput
+      .split(",")
+      .map(market => market.trim())
+      .filter(market => market.length > 0);
+    
     const updatedProfile = {
       ...profile,
-      cities: parsedCities
+      cities: parsedCities,
+      markets: parsedMarkets
     };
     
     try {
@@ -64,16 +71,16 @@ export default function AgencyProfile() {
       });
       
       toast({
-        title: t("common.success"),
-        description: t("agencyProfile.profileUpdated")
+        title: "Succès",
+        description: "Votre profil a été mis à jour"
       });
       
       setIsEditing(false);
     } catch (error) {
-      console.error("Error updating profile", error);
+      console.error("Erreur lors de la mise à jour du profil", error);
       toast({
-        title: t("common.error"),
-        description: t("agencyProfile.errorUpdating"),
+        title: "Erreur",
+        description: "Impossible de mettre à jour votre profil",
         variant: "destructive"
       });
     }
@@ -83,7 +90,7 @@ export default function AgencyProfile() {
     return (
       <MainLayout>
         <div className="flex items-center justify-center h-[calc(100vh-200px)]">
-          <p className="text-xl text-muted-foreground">{t("common.notAuthorized")}</p>
+          <p className="text-xl text-muted-foreground">Vous n'êtes pas autorisé à accéder à cette page</p>
         </div>
       </MainLayout>
     );
@@ -93,9 +100,9 @@ export default function AgencyProfile() {
     <MainLayout>
       <div className="animate-fade-in">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold">{t("agencyProfile.title")}</h1>
+          <h1 className="text-3xl font-bold">Profil de l'agence</h1>
           <p className="text-muted-foreground mt-1">
-            {t("agencyProfile.subtitle")}
+            Gérez les informations de votre agence de voyage
           </p>
         </div>
         
@@ -105,7 +112,7 @@ export default function AgencyProfile() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Building className="h-5 w-5" />
-                {isEditing ? t("agencyProfile.editProfile") : profile.name || t("agencyProfile.name")}
+                {isEditing ? "Modifier le profil" : profile.name || "Nom de l'agence"}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -113,7 +120,7 @@ export default function AgencyProfile() {
                 <div className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="name">{t("agencyProfile.name")}</Label>
+                      <Label htmlFor="name">Nom de l'agence</Label>
                       <Input 
                         id="name"
                         name="name"
@@ -123,7 +130,7 @@ export default function AgencyProfile() {
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="foundedDate">{t("agencyProfile.foundedDate")}</Label>
+                      <Label htmlFor="foundedDate">Date de création</Label>
                       <Input
                         id="foundedDate"
                         name="foundedDate"
@@ -136,7 +143,7 @@ export default function AgencyProfile() {
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="address">{t("agencyProfile.address")}</Label>
+                      <Label htmlFor="address">Adresse</Label>
                       <Input 
                         id="address"
                         name="address"
@@ -146,7 +153,7 @@ export default function AgencyProfile() {
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="postalCode">{t("agencyProfile.postalCode")}</Label>
+                      <Label htmlFor="postalCode">Code postal</Label>
                       <Input 
                         id="postalCode"
                         name="postalCode"
@@ -157,21 +164,34 @@ export default function AgencyProfile() {
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="cities">{t("agencyProfile.cities")}</Label>
+                    <Label htmlFor="cities">Villes desservies</Label>
                     <Input 
                       id="cities"
-                      placeholder={t("agencyProfile.citiesPlaceholder") || "Casablanca, Marrakech, Tangier"}
+                      placeholder="Casablanca, Marrakech, Tanger"
                       value={citiesInput}
                       onChange={(e) => setCitiesInput(e.target.value)}
                     />
                     <p className="text-xs text-muted-foreground">
-                      {t("agencyProfile.citiesHelp") || "Comma-separated list of cities"}
+                      Liste des villes séparées par des virgules
+                    </p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="markets">Marchés</Label>
+                    <Input 
+                      id="markets"
+                      placeholder="Europe, Afrique, Moyen-Orient"
+                      value={marketsInput}
+                      onChange={(e) => setMarketsInput(e.target.value)}
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Liste des marchés séparés par des virgules (ex: Europe, Afrique, Moyen-Orient)
                     </p>
                   </div>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="iataCode">{t("agencyProfile.iataCode")}</Label>
+                      <Label htmlFor="iataCode">Code IATA</Label>
                       <Input 
                         id="iataCode"
                         name="iataCode"
@@ -181,7 +201,7 @@ export default function AgencyProfile() {
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="specialty">{t("agencyProfile.specialty")}</Label>
+                      <Label htmlFor="specialty">Spécialité</Label>
                       <Input 
                         id="specialty"
                         name="specialty"
@@ -193,7 +213,7 @@ export default function AgencyProfile() {
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="phoneNumber">{t("agencyProfile.phoneNumber")}</Label>
+                      <Label htmlFor="phoneNumber">Téléphone mobile</Label>
                       <Input 
                         id="phoneNumber"
                         name="phoneNumber"
@@ -203,7 +223,7 @@ export default function AgencyProfile() {
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="landline">{t("agencyProfile.landline")}</Label>
+                      <Label htmlFor="landline">Téléphone fixe</Label>
                       <Input 
                         id="landline"
                         name="landline"
@@ -215,7 +235,7 @@ export default function AgencyProfile() {
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="contactEmail">{t("agencyProfile.contactEmail")}</Label>
+                      <Label htmlFor="contactEmail">Email de contact</Label>
                       <Input 
                         id="contactEmail"
                         name="contactEmail"
@@ -226,7 +246,7 @@ export default function AgencyProfile() {
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="claimEmail">{t("agencyProfile.claimEmail")}</Label>
+                      <Label htmlFor="claimEmail">Email de réclamation</Label>
                       <Input 
                         id="claimEmail"
                         name="claimEmail"
@@ -238,22 +258,23 @@ export default function AgencyProfile() {
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="bio">{t("agencyProfile.bio")}</Label>
+                    <Label htmlFor="bio">Présentation de l'agence</Label>
                     <Textarea 
                       id="bio"
                       name="bio"
                       rows={4}
                       value={profile.bio}
                       onChange={handleChange}
+                      placeholder="Décrivez votre agence, son histoire, ses domaines d'expertise..."
                     />
                   </div>
                   
                   <div className="flex gap-2 justify-end">
                     <Button variant="outline" onClick={() => setIsEditing(false)}>
-                      {t("common.cancel")}
+                      Annuler
                     </Button>
                     <Button onClick={handleSave}>
-                      {t("agencyProfile.saveProfile")}
+                      Enregistrer
                     </Button>
                   </div>
                 </div>
@@ -277,7 +298,7 @@ export default function AgencyProfile() {
                         <MapPin className="h-5 w-5 text-muted-foreground mt-0.5" />
                         <div>
                           <p className="text-sm font-medium text-muted-foreground">
-                            {t("agencyProfile.address")}
+                            Adresse
                           </p>
                           <p>{profile.address}</p>
                           <p>{profile.postalCode}</p>
@@ -288,7 +309,7 @@ export default function AgencyProfile() {
                     {profile.cities.length > 0 && (
                       <div>
                         <p className="text-sm font-medium text-muted-foreground mb-1">
-                          {t("agencyProfile.cities")}
+                          Villes desservies
                         </p>
                         <div className="flex flex-wrap gap-2">
                           {profile.cities.map((city, index) => (
@@ -303,11 +324,29 @@ export default function AgencyProfile() {
                       </div>
                     )}
                   </div>
+
+                  {profile.markets && profile.markets.length > 0 && (
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground mb-1">
+                        Marchés
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {profile.markets.map((market, index) => (
+                          <span
+                            key={index}
+                            className="bg-secondary text-secondary-foreground px-2 py-1 rounded-md text-sm"
+                          >
+                            {market}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                   
                   {profile.iataCode && (
                     <div>
                       <p className="text-sm font-medium text-muted-foreground mb-1">
-                        {t("agencyProfile.iataCode")}
+                        Code IATA
                       </p>
                       <p>{profile.iataCode}</p>
                     </div>
@@ -318,7 +357,7 @@ export default function AgencyProfile() {
                       {profile.phoneNumber && (
                         <div>
                           <p className="text-sm font-medium text-muted-foreground mb-1">
-                            {t("agencyProfile.phoneNumber")}
+                            Téléphone mobile
                           </p>
                           <p>{profile.phoneNumber}</p>
                         </div>
@@ -327,7 +366,7 @@ export default function AgencyProfile() {
                       {profile.landline && (
                         <div>
                           <p className="text-sm font-medium text-muted-foreground mb-1">
-                            {t("agencyProfile.landline")}
+                            Téléphone fixe
                           </p>
                           <p>{profile.landline}</p>
                         </div>
@@ -340,7 +379,7 @@ export default function AgencyProfile() {
                       {profile.contactEmail && (
                         <div>
                           <p className="text-sm font-medium text-muted-foreground mb-1">
-                            {t("agencyProfile.contactEmail")}
+                            Email de contact
                           </p>
                           <p>{profile.contactEmail}</p>
                         </div>
@@ -349,7 +388,7 @@ export default function AgencyProfile() {
                       {profile.claimEmail && (
                         <div>
                           <p className="text-sm font-medium text-muted-foreground mb-1">
-                            {t("agencyProfile.claimEmail")}
+                            Email de réclamation
                           </p>
                           <p>{profile.claimEmail}</p>
                         </div>
@@ -360,7 +399,7 @@ export default function AgencyProfile() {
                   {profile.specialty && (
                     <div>
                       <p className="text-sm font-medium text-muted-foreground mb-1">
-                        {t("agencyProfile.specialty")}
+                        Spécialité
                       </p>
                       <p>{profile.specialty}</p>
                     </div>
@@ -369,7 +408,7 @@ export default function AgencyProfile() {
                   {profile.bio && (
                     <div>
                       <p className="text-sm font-medium text-muted-foreground mb-1">
-                        {t("agencyProfile.bio")}
+                        Présentation de l'agence
                       </p>
                       <p className="whitespace-pre-line">{profile.bio}</p>
                     </div>
@@ -377,7 +416,7 @@ export default function AgencyProfile() {
                   
                   <div className="flex justify-end">
                     <Button onClick={() => setIsEditing(true)}>
-                      {t("agencyProfile.editProfile")}
+                      Modifier le profil
                     </Button>
                   </div>
                 </div>
@@ -389,21 +428,21 @@ export default function AgencyProfile() {
           <div className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>{t("wallet.title")}</CardTitle>
+                <CardTitle>Portefeuille</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="text-3xl font-bold mb-2">
-                  {currentUser.walletBalance || 0} {t("wallet.currency")}
+                  {currentUser.walletBalance || 0} MAD
                 </div>
                 <p className="text-sm text-muted-foreground mb-4">
-                  {t("wallet.balanceDescription")}
+                  Balance actuelle de votre portefeuille
                 </p>
                 <div className="space-x-2">
                   <Button variant="outline" size="sm">
-                    {t("wallet.addFunds")}
+                    Alimenter
                   </Button>
                   <Button variant="outline" size="sm">
-                    {t("wallet.withdraw")}
+                    Retirer
                   </Button>
                 </div>
               </CardContent>

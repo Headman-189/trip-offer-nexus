@@ -25,6 +25,7 @@ export interface AgencyProfile {
   imageUrl?: string;
   foundedDate?: string;
   specialty?: string;
+  markets?: string[]; // Nouveaux marchés de l'agence
 }
 
 export type TransportType = 'rail' | 'flight';
@@ -40,6 +41,32 @@ export interface TravelPreferences {
   insurance?: boolean;
   carRental?: boolean;
   privateDriver?: boolean;
+}
+
+export type MessageStatus = 'sent' | 'delivered' | 'read';
+
+export interface Message {
+  id: string;
+  conversationId: string;
+  senderId: string;
+  recipientId: string;
+  content: string;
+  status: MessageStatus;
+  createdAt: string;
+  readAt?: string;
+  attachmentUrl?: string;
+}
+
+export interface Conversation {
+  id: string;
+  participantIds: string[];
+  participantNames?: string[];
+  lastMessageId?: string;
+  lastMessageContent?: string;
+  lastMessageTime?: string;
+  unreadCount: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface TravelRequest {
