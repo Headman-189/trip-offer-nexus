@@ -10,6 +10,7 @@ interface AuthContextType {
   logout: () => void;
   register: (name: string, email: string, password: string, role: UserRole) => Promise<void>;
   updateUserProfile: (updatedUser: User) => Promise<void>;
+  getAllUsers: () => Promise<User[]>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -142,6 +143,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
   };
 
+  const getAllUsers = async (): Promise<User[]> => {
+    // Simulate API call delay
+    await new Promise(resolve => setTimeout(resolve, 300));
+    
+    // Return mock users
+    return Promise.resolve(mockUsers);
+  };
+
   const value = {
     currentUser,
     isLoading,
@@ -149,6 +158,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     logout,
     register,
     updateUserProfile,
+    getAllUsers,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
